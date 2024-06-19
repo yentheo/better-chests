@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "one.spectra.better_chests.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"ExampleMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

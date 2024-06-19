@@ -1,0 +1,12 @@
+{
+    "sources": [
+        {
+            "type": "single",
+            "resource": "better_chests:sort-button-unfocused"
+        },
+        {
+            "type": "single",
+            "resource": "better_chests:sort-button-focused"
+        }
+    ]
+}
