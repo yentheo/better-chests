@@ -1,5 +1,7 @@
 package one.spectra.better_chests.abstractions;
 
+import one.spectra.better_chests.common.abstractions.ItemStack;
+
 public class SpectraItemStack implements ItemStack {
 
     private net.minecraft.item.ItemStack _itemStack;

@@ -1,23 +1,20 @@
-package one.spectra.better_chests.inventory.fillers;
+package one.spectra.better_chests.common.inventory.fillers;
 
 import java.util.List;
-import org.slf4j.Logger;
 
 import com.google.inject.Inject;
 
-import one.spectra.better_chests.abstractions.ItemStack;
-import one.spectra.better_chests.inventory.Inventory;
-import one.spectra.better_chests.inventory.Spreader;
+import one.spectra.better_chests.common.abstractions.ItemStack;
+import one.spectra.better_chests.common.inventory.Inventory;
+import one.spectra.better_chests.common.inventory.Spreader;
 
 public class RowFiller implements Filler {
 
     private Spreader _spreader;
-    private Logger _logger;
 
     @Inject
-    public RowFiller(Spreader spreader, Logger logger) {
+    public RowFiller(Spreader spreader) {
         _spreader = spreader;
-        _logger = logger;
     }
 
     @Override
@@ -31,7 +28,6 @@ public class RowFiller implements Filler {
 
     @Override
     public void fill(Inventory inventory, List<List<ItemStack>> groups, boolean spread) {
-        _logger.info("Filling with row filler");
         if (spread) {
             groups = _spreader.spread(groups, inventory.getColumns());
         }

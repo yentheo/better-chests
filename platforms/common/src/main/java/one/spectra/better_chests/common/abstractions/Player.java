@@ -1,6 +1,6 @@
-package one.spectra.better_chests.abstractions;
+package one.spectra.better_chests.common.abstractions;
 
-import one.spectra.better_chests.inventory.Inventory;
+import one.spectra.better_chests.common.inventory.Inventory;
 
 public interface Player {
     Inventory getOpenContainer();

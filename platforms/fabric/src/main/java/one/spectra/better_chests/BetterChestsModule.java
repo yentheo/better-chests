@@ -13,20 +13,21 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Names;
 import com.mojang.logging.LogUtils;
 
-import one.spectra.better_chests.abstractions.Player;
+import one.spectra.better_chests.common.Sorter;
+import one.spectra.better_chests.common.abstractions.Player;
 import one.spectra.better_chests.abstractions.PlayerFactory;
 import one.spectra.better_chests.abstractions.SpectraPlayer;
-import one.spectra.better_chests.inventory.Inventory;
+import one.spectra.better_chests.common.inventory.Inventory;
 import one.spectra.better_chests.inventory.InventoryCreator;
 import one.spectra.better_chests.inventory.InventoryFactory;
 import one.spectra.better_chests.inventory.SpectraInventory;
 import one.spectra.better_chests.inventory.SpectraInventoryCreator;
-import one.spectra.better_chests.inventory.Spreader;
-import one.spectra.better_chests.inventory.fillers.ColumnFiller;
-import one.spectra.better_chests.inventory.fillers.DefaultFiller;
-import one.spectra.better_chests.inventory.fillers.Filler;
-import one.spectra.better_chests.inventory.fillers.InventoryFillerProvider;
-import one.spectra.better_chests.inventory.fillers.RowFiller;
+import one.spectra.better_chests.common.inventory.Spreader;
+import one.spectra.better_chests.common.inventory.fillers.ColumnFiller;
+import one.spectra.better_chests.common.inventory.fillers.DefaultFiller;
+import one.spectra.better_chests.common.inventory.fillers.Filler;
+import one.spectra.better_chests.common.inventory.fillers.InventoryFillerProvider;
+import one.spectra.better_chests.common.inventory.fillers.RowFiller;
 
 public class BetterChestsModule extends AbstractModule {
 
@@ -37,6 +38,7 @@ public class BetterChestsModule extends AbstractModule {
     protected void configure() {
         bind(Logger.class).toInstance(LogUtils.getLogger());
         bind(InventoryCreator.class).to(SpectraInventoryCreator.class);
+        bind(one.spectra.better_chests.common.inventory.InventoryCreator.class).to(SpectraInventoryCreator.class);
 
         bind(Sorter.class);
         bind(Spreader.class);

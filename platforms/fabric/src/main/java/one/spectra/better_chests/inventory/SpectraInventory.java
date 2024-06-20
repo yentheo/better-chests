@@ -7,7 +7,8 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 
 import net.minecraft.item.Items;
-import one.spectra.better_chests.abstractions.ItemStack;
+import one.spectra.better_chests.common.inventory.Inventory;
+import one.spectra.better_chests.common.abstractions.ItemStack;
 import one.spectra.better_chests.abstractions.SpectraItemStack;
 import one.spectra.better_chests.communication.messages.Configuration;
 
@@ -46,11 +47,11 @@ public class SpectraInventory implements Inventory {
     }
 
     public void putInSlot(int slot, ItemStack stack) {
-        _inventory.setStack(slot + _skipSlots, stack.getItemStack());
+        _inventory.setStack(slot + _skipSlots, (net.minecraft.item.ItemStack)stack.getItemStack());
     }
 
     public void add(ItemStack stack) {
-        addItem(stack.getItemStack());
+        addItem((net.minecraft.item.ItemStack)stack.getItemStack());
     }
 
     public void clear() {

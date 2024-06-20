@@ -1,8 +1,10 @@
 plugins {
+	id 'java'
 	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
     id "com.modrinth.minotaur" version "2.+"
 }
+import com.modrinth.minotaur.dependencies.ModDependency
 
 version = project.mod_version
 group = project.maven_group
@@ -53,6 +55,8 @@ dependencies {
     include 'com.google.inject.extensions:guice-assistedinject:[7.0.0]'
     include 'jakarta.inject:jakarta.inject-api:[2.0.1]'
     include 'aopalliance:aopalliance:[1.0]'
+    implementation project(':common')
+	include project(':common')
 }
 
 processResources {
@@ -100,7 +104,6 @@ publishing {
 		// retrieving dependencies.
 	}
 }
-import com.modrinth.minotaur.dependencies.ModDependency
  
 modrinth {
     token = 'mrp_Sqi0TL6IMwCiL64uvIEBMO6CuWX3vhrOGXjWrUA5PIQha7RbGzIKnzwT8N9F' // Please use an environment variable for this! The default is `$MODRINTH_TOKEN`.

@@ -6,7 +6,8 @@ import com.google.inject.assistedinject.Assisted;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import one.spectra.better_chests.inventory.Inventory;
+import one.spectra.better_chests.common.inventory.Inventory;
+import one.spectra.better_chests.common.abstractions.Player;
 import one.spectra.better_chests.inventory.InventoryCreator;
 import one.spectra.better_chests.inventory.InventoryFactory;
 

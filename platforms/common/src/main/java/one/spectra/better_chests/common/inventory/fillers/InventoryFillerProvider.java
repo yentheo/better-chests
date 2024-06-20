@@ -1,12 +1,12 @@
-package one.spectra.better_chests.inventory.fillers;
+package one.spectra.better_chests.common.inventory.fillers;
 
 import java.util.List;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import one.spectra.better_chests.abstractions.ItemStack;
-import one.spectra.better_chests.inventory.Inventory;
+import one.spectra.better_chests.common.abstractions.ItemStack;
+import one.spectra.better_chests.common.inventory.Inventory;
 
 public class InventoryFillerProvider {
 

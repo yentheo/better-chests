@@ -1,7 +1,7 @@
-package one.spectra.better_chests.inventory;
+package one.spectra.better_chests.common.inventory;
 
 import java.util.List;
-import one.spectra.better_chests.abstractions.ItemStack;
+import one.spectra.better_chests.common.abstractions.ItemStack;
 
 public interface Inventory {
     void clear();

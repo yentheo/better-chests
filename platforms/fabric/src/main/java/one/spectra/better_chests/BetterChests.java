@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import one.spectra.better_chests.abstractions.PlayerFactory;
+import one.spectra.better_chests.common.Sorter;
 import one.spectra.better_chests.communication.messages.SortRequest;
 
 import org.slf4j.Logger;

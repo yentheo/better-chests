@@ -1,8 +1,9 @@
 package one.spectra.better_chests.inventory;
 
 import com.google.inject.Inject;
+import one.spectra.better_chests.common.inventory.Inventory;
 
-public class SpectraInventoryCreator implements InventoryCreator {
+public class SpectraInventoryCreator implements InventoryCreator, one.spectra.better_chests.common.inventory.InventoryCreator {
 
     private InventoryFactory _inventoryFactory;
 

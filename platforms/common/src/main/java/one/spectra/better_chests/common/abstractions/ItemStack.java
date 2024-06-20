@@ -1,8 +1,8 @@
-package one.spectra.better_chests.abstractions;
+package one.spectra.better_chests.common.abstractions;
 
 public interface ItemStack {
     int getAmount();
     String getMaterialKey();    
-    net.minecraft.item.ItemStack getItemStack();
+    Object getItemStack();
     ItemStack takeOne();
 }
