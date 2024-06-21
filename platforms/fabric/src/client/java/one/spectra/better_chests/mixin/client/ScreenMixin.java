@@ -1,6 +1,7 @@
 package one.spectra.better_chests.mixin.client;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -15,11 +16,11 @@ import one.spectra.better_chests.SortButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import org.spongepowered.asm.mixin.Shadow;
 
 @Environment(EnvType.CLIENT)
 @Mixin(HandledScreen.class)
-public class ScreenMixin extends Screen {
+public abstract class ScreenMixin extends Screen {
+	private SortButtonWidget _inventoryButtonWidget;
 	@Shadow
 	protected int x;
 	@Shadow
@@ -38,6 +39,14 @@ public class ScreenMixin extends Screen {
 		initialize(callbackinfo);
 	}
 
+	@Inject(method = "render", at = @At("TAIL"))
+	private void invsort$render(CallbackInfo callbackInfo) {
+		var x = this.x + this.backgroundWidth - 20;
+		if (x != _inventoryButtonWidget.getX()) {
+			_inventoryButtonWidget.setX(x);
+		}
+	}
+
 	private void initialize(CallbackInfo callbackinfo) {
 		if (client == null || client.player == null)
 			return;
@@ -54,10 +63,11 @@ public class ScreenMixin extends Screen {
 
 		int numSlots = client.player.currentScreenHandler.slots.size();
 		var x = this.x + this.backgroundWidth - 20;
+
 		if (numSlots >= 45) {
 			var y = this.y + (numSlots > 36 ? (backgroundHeight - 95) : 6);
-			var widget = new SortButtonWidget(x, y, InventoryType.PLAYER);
-			this.addDrawableChild(widget);
+			_inventoryButtonWidget = new SortButtonWidget(x, y, InventoryType.PLAYER);
+			this.addDrawableChild(_inventoryButtonWidget);
 		}
 		if (numSlots >= 63) {
 			var widget2 = new SortButtonWidget(x, this.y + 6, InventoryType.CHEST);
