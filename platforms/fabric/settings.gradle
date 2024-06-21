@@ -4,5 +4,9 @@ pluginManagement {
 			name = 'Fabric'
 			url = 'https://maven.fabricmc.net/'
 		}
+		gradlePluginPortal()
 	}
 }
+
+include ':common'
+project(':common').projectDir = file('../common')
