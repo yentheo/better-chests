@@ -7,14 +7,14 @@ plugins {
     id "com.modrinth.minotaur" version "2.+"
 }
 
-tasks.named('wrapper', Wrapper).configure {
-    // Define wrapper values here so as to not have to always do so when updating gradlew.properties.
-    // Switching this to Wrapper.DistributionType.ALL will download the full gradle sources that comes with
-    // documentation attached on cursor hover of gradle classes and methods. However, this comes with increased
-    // file size for Gradle. If you do switch this to ALL, run the Gradle wrapper task twice afterwards.
-    // (Verify by checking gradle/wrapper/gradle-wrapper.properties to see if distributionUrl now points to `-all`)
-    distributionType = Wrapper.DistributionType.BIN
-}
+// tasks.named('wrapper', Wrapper).configure {
+//     // Define wrapper values here so as to not have to always do so when updating gradlew.properties.
+//     // Switching this to Wrapper.DistributionType.ALL will download the full gradle sources that comes with
+//     // documentation attached on cursor hover of gradle classes and methods. However, this comes with increased
+//     // file size for Gradle. If you do switch this to ALL, run the Gradle wrapper task twice afterwards.
+//     // (Verify by checking gradle/wrapper/gradle-wrapper.properties to see if distributionUrl now points to `-all`)
+//     distributionType = Wrapper.DistributionType.BIN
+// }
 
 version = mod_version
 group = mod_group_id
@@ -105,6 +105,7 @@ dependencies {
     implementation ('com.google.inject.extensions:guice-assistedinject:7.0.0') {
         exclude group: 'com.google.guava', module: 'guava'
     }
+    implementation project(':common')
 
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
