@@ -25,11 +25,11 @@ public class BetterInventoryScreen extends InventoryScreen {
         var sortButtonFocusedImage = ResourceLocation.fromNamespaceAndPath("better_chests", "sort-button-focused");
         var sortButtonUnfocusedImage = ResourceLocation.fromNamespaceAndPath("better_chests", "sort-button-unfocused");
         var sortSprite = new WidgetSprites(sortButtonFocusedImage, sortButtonUnfocusedImage);
-        var sortContainerButton = new ImageButton(positionX, positionY, 13, 9, sortSprite,
+        _sortButton = new ImageButton(positionX, positionY, 13, 9, sortSprite,
                 e -> {
                     PacketDistributor.sendToServer(new SortRequest(true));
                 });
-        this.addRenderableWidget(sortContainerButton);
+        this.addRenderableWidget(_sortButton);
     }
 
     @Override
@@ -40,7 +40,8 @@ public class BetterInventoryScreen extends InventoryScreen {
             positionX = this.leftPos + imageWidth - 20;
         }
 
-        this._sortButton.setPosition(positionX, positionY);
+        if (this._sortButton != null)
+            this._sortButton.setPosition(positionX, positionY);
 
         super.render(p_282060_, p_282533_, p_281661_, p_281873_);
     }

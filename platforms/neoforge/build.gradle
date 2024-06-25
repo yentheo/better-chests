@@ -21,6 +21,7 @@ group = mod_group_id
 
 repositories {
     mavenLocal()
+	mavenCentral()
 }
 
 base {
@@ -51,6 +52,12 @@ runs {
         systemProperty 'forge.logging.console.level', 'debug'
 
         modSource project.sourceSets.main
+
+        dependencies { 
+            runtime 'com.google.inject:guice:7.0.0'
+            runtime 'com.google.inject.extensions:guice-assistedinject:7.0.0'
+            runtime project(':common')
+        }
     }
 
     client {
@@ -90,6 +97,8 @@ configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
 
+jarJar.enable()
+
 dependencies {
     // Specify the version of Minecraft to use.
     // Depending on the plugin applied there are several options. We will assume you applied the userdev plugin as shown above.
@@ -98,13 +107,10 @@ dependencies {
     // And its provides the option to then use net.minecraft as the group, and one of; client, server or joined as the module name, plus the game version as version.
     // For all intends and purposes: You can treat this dependency as if it is a normal library you would use.
     implementation "net.neoforged:neoforge:${neo_version}"
-    
-    implementation ('com.google.inject:guice:7.0.0') {
-        exclude group: 'com.google.guava', module: 'guava'
-    }
-    implementation ('com.google.inject.extensions:guice-assistedinject:7.0.0') {
-        exclude group: 'com.google.guava', module: 'guava'
-    }
+    implementation 'com.google.inject:guice:7.0.0'
+    implementation 'com.google.inject.extensions:guice-assistedinject:7.0.0'
+    jarJar ( group: 'com.google.inject', name: 'guice', version: '7.0.0') { }
+    jarJar ( group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '7.0.0') { }
     implementation project(':common')
 
     // Example optional mod dependency with JEI
@@ -184,7 +190,7 @@ idea {
 modrinth {
     token = 'mrp_Sqi0TL6IMwCiL64uvIEBMO6CuWX3vhrOGXjWrUA5PIQha7RbGzIKnzwT8N9F' // Please use an environment variable for this! The default is `$MODRINTH_TOKEN`.
     projectId = 'dYXpr2Hl' // The ID of your Modrinth project. Slugs will not work.
-    versionNumber = '0.0.2-1.21' // The (preferably SemVer) version of the mod. If not specified, it'll use the `version` declaration
+    versionNumber = '0.0.3-1.21' // The (preferably SemVer) version of the mod. If not specified, it'll use the `version` declaration
     versionName = 'Initial release' // The version title. If not specified, it'll use the version number
     uploadFile = jar // Tells Minotaur to use the remapped jar
     gameVersions = ['1.21'] // An array of game versions the version supports

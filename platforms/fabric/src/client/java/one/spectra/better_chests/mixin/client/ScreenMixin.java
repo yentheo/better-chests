@@ -41,9 +41,11 @@ public abstract class ScreenMixin extends Screen {
 
 	@Inject(method = "render", at = @At("TAIL"))
 	private void invsort$render(CallbackInfo callbackInfo) {
-		var x = this.x + this.backgroundWidth - 20;
-		if (x != _inventoryButtonWidget.getX()) {
-			_inventoryButtonWidget.setX(x);
+		if (_inventoryButtonWidget != null) {
+			var x = this.x + this.backgroundWidth - 20;
+			if (x != _inventoryButtonWidget.getX()) {
+				_inventoryButtonWidget.setX(x);
+			}
 		}
 	}
 
