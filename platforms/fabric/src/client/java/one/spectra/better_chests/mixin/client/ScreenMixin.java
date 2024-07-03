@@ -46,21 +46,6 @@ public abstract class ScreenMixin extends Screen {
 
 	@Inject(method = "init", at = @At("TAIL"))
 	private void invsort$init(CallbackInfo callbackinfo) {
-
-		var messageService = BetterChestsClient.INJECTOR.getInstance(MessageService.class);
-
-		var futureResponse = messageService.requestFromServer(GetConfigurationRequest.INSTANCE,
-				GetConfigurationResponse.class);
-
-		Executors.newCachedThreadPool().submit(() -> {
-			try {
-				var response = futureResponse.get();
-				sortOnClose = response.sortOnClose();
-			} catch (InterruptedException | ExecutionException e) {
-				e.printStackTrace();
-			}
-		});
-
 		initialize(callbackinfo);
 	}
 
@@ -84,14 +69,27 @@ public abstract class ScreenMixin extends Screen {
 		if (client == null || client.player == null)
 			return;
 
-		BetterChestsClient.LOGGER.info(client.player.currentScreenHandler.toString());
 		var isGenericContainerScreen = client.player.currentScreenHandler instanceof GenericContainerScreenHandler;
 		var isPlayerScreen = client.player.currentScreenHandler instanceof PlayerScreenHandler;
 
 		if (!isGenericContainerScreen && !isPlayerScreen) {
-			var screenHandler = client.player.currentScreenHandler;
-			BetterChestsClient.LOGGER.info(screenHandler.toString());
 			return;
+		}
+
+		if (isGenericContainerScreen) {
+			var messageService = BetterChestsClient.INJECTOR.getInstance(MessageService.class);
+
+			var futureResponse = messageService.requestFromServer(GetConfigurationRequest.INSTANCE,
+					GetConfigurationResponse.class);
+
+			Executors.newCachedThreadPool().submit(() -> {
+				try {
+					var response = futureResponse.get();
+					sortOnClose = response.sortOnClose();
+				} catch (InterruptedException | ExecutionException e) {
+					e.printStackTrace();
+				}
+			});
 		}
 
 		int numSlots = client.player.currentScreenHandler.slots.size();

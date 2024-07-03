@@ -39,13 +39,11 @@ public class SpectraInventory implements Inventory {
     }
 
     private ConfigurationBlockEntity getBlockEntity() {
-        BetterChests.LOGGER.info(String.valueOf(_inventory));
         if (_inventory instanceof PlayerInventory)
             return null;
         var blockEntity = _inventory instanceof DoubleInventory ? getFirstContainer((DoubleInventory) _inventory)
                 : (ChestBlockEntity) _inventory;
         if (blockEntity instanceof ConfigurationBlockEntity) {
-            BetterChests.LOGGER.info(String.valueOf((ConfigurationBlockEntity) blockEntity));
             return (ConfigurationBlockEntity) blockEntity;
         }
         return null;

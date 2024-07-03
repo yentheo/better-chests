@@ -16,14 +16,11 @@ public class ScreenEvents {
         var minecraft = Minecraft.getInstance();
         if (screen instanceof ContainerScreen) {
             var containerScreen = (ContainerScreen) screen;
-            BetterChestsMod.LOGGER.info("Switching out container screen for better container screen");
             event.setNewScreen(new BetterContainerScreen(containerScreen.getMenu(), new Inventory(minecraft.player), containerScreen.getTitle()));
         } else if (screen instanceof ShulkerBoxScreen) {
             // var containerScreen = (ShulkerBoxScreen) screen;
-            // BetterChestsMod.LOGGER.info("Switching out shulker box screen for better shulker box screen");
             // event.setNewScreen(new BetterShulkerBoxScreen(containerScreen.getMenu(), new Inventory(minecraft.player), containerScreen.getTitle()));
         } else if (screen instanceof InventoryScreen) {
-            BetterChestsMod.LOGGER.info("Switching out inventory screen for better inventory screen");
             event.setNewScreen(new BetterInventoryScreen(minecraft.player));
         }
     }

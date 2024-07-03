@@ -45,7 +45,6 @@ public class BetterContainerScreen extends ContainerScreen {
     @Override
     public void init() {
         super.init();
-        BetterChestsMod.LOGGER.info("Adding sort button");
         var sortButtonFocusedImage = ResourceLocation.fromNamespaceAndPath("better_chests", "sort-button-focused");
         var sortButtonUnfocusedImage = ResourceLocation.fromNamespaceAndPath("better_chests", "sort-button-unfocused");
         var sortSprite = new WidgetSprites(sortButtonFocusedImage, sortButtonUnfocusedImage);
@@ -55,7 +54,6 @@ public class BetterContainerScreen extends ContainerScreen {
                     PacketDistributor.sendToServer(new SortRequest(false));
                 });
         this.addRenderableWidget(sortContainerButton);
-        BetterChestsMod.LOGGER.info("Adding settings button");
         var configurationButtonFocusedImage = ResourceLocation.fromNamespaceAndPath("better_chests",
                 "configuration-button-unfocused");
         var configurationButtonUnfocusedImage = ResourceLocation.fromNamespaceAndPath("better_chests",

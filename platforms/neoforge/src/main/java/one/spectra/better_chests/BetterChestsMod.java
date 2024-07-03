@@ -48,12 +48,10 @@ public class BetterChestsMod {
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        LOGGER.info("Better Chests are enabled");
+        LOGGER.info("Initializing Better Chests!");
     }
 
     public void onRegisterNetworkPackets(RegisterPayloadHandlersEvent event) {
-        LOGGER.info("Registering communication common");
-        LOGGER.info("Registering communication");
         // Sets the current network version
         final PayloadRegistrar registrar = event.registrar("better-chests").versioned("1").optional();
         NETWORK_INJECTOR = INJECTOR.createChildInjector(new BetterChestsNetworkModule(registrar));

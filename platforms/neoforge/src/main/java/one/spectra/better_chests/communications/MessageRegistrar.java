@@ -43,8 +43,6 @@ public class MessageRegistrar {
 
             @Override
             public void handle(T payload, IPayloadContext context) {
-                BetterChestsMod.LOGGER.info(String.valueOf(_oneTimeConsumers.size()));
-                BetterChestsMod.LOGGER.info(clazz.getName());
                 var oneTimeConsumer = _oneTimeConsumers.get(clazz);
                 if (oneTimeConsumer != null) {
                     _oneTimeConsumers.remove(oneTimeConsumer);
