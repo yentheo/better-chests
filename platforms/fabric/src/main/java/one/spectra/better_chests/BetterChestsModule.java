@@ -13,6 +13,9 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Names;
 import com.mojang.logging.LogUtils;
 
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.PlayPayloadHandler;
+import net.minecraft.network.RegistryByteBuf;
 import one.spectra.better_chests.common.Sorter;
 import one.spectra.better_chests.common.abstractions.Player;
 import one.spectra.better_chests.abstractions.PlayerFactory;
@@ -28,10 +31,20 @@ import one.spectra.better_chests.common.inventory.fillers.DefaultFiller;
 import one.spectra.better_chests.common.inventory.fillers.Filler;
 import one.spectra.better_chests.common.inventory.fillers.InventoryFillerProvider;
 import one.spectra.better_chests.common.inventory.fillers.RowFiller;
+import one.spectra.better_chests.communications.handlers.ConfigureChestHandler;
+import one.spectra.better_chests.communications.handlers.SortRequestHandler;
+import one.spectra.better_chests.communications.requests.ConfigureChestRequest;
+import one.spectra.better_chests.communications.requests.SortRequest;
 
 public class BetterChestsModule extends AbstractModule {
 
-    public BetterChestsModule() {
+    private PayloadTypeRegistry<RegistryByteBuf> serverPayloadRegistrar;
+    private PayloadTypeRegistry<RegistryByteBuf> clientPayloadRegistrar;
+
+    public BetterChestsModule(PayloadTypeRegistry<RegistryByteBuf> serverPayloadRegistrar,
+            PayloadTypeRegistry<RegistryByteBuf> clientPayloadRegistrar) {
+        this.serverPayloadRegistrar = serverPayloadRegistrar;
+        this.clientPayloadRegistrar = clientPayloadRegistrar;
     }
 
     @Override
@@ -40,6 +53,14 @@ public class BetterChestsModule extends AbstractModule {
         bind(InventoryCreator.class).to(SpectraInventoryCreator.class);
         bind(one.spectra.better_chests.common.inventory.InventoryCreator.class).to(SpectraInventoryCreator.class);
 
+        bind(new TypeLiteral<PlayPayloadHandler<SortRequest>>() {
+        }).to(SortRequestHandler.class);
+        bind(new TypeLiteral<PlayPayloadHandler<ConfigureChestRequest>>() {
+        }).to(ConfigureChestHandler.class);
+        bind(new TypeLiteral<PayloadTypeRegistry<RegistryByteBuf>>() {
+        }).annotatedWith(Names.named("server")).toInstance(serverPayloadRegistrar);
+        bind(new TypeLiteral<PayloadTypeRegistry<RegistryByteBuf>>() {
+        }).annotatedWith(Names.named("client")).toInstance(clientPayloadRegistrar);
         bind(Sorter.class);
         bind(Spreader.class);
         bind(InventoryFillerProvider.class);
@@ -47,7 +68,6 @@ public class BetterChestsModule extends AbstractModule {
         bind(RowFiller.class);
         bind(ColumnFiller.class);
 
-        
         install(new FactoryModuleBuilder()
                 .implement(Player.class, SpectraPlayer.class)
                 .build(PlayerFactory.class));

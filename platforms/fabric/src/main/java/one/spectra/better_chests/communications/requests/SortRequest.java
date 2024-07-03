@@ -1,4 +1,4 @@
-package one.spectra.better_chests.communication.messages;
+package one.spectra.better_chests.communications.requests;
 
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;

@@ -3,7 +3,6 @@ package one.spectra.better_chests.inventory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.slf4j.Logger;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 
@@ -22,20 +21,17 @@ public class SpectraInventory implements Inventory {
     private int _skipSlots;
     private int _size;
 
-    private Logger _logger;
-
     @AssistedInject
-    public SpectraInventory(@Assisted net.minecraft.world.entity.player.Inventory playerInventory, Logger logger) {
-        this(playerInventory, 9, 27, logger);
+    public SpectraInventory(@Assisted net.minecraft.world.entity.player.Inventory playerInventory) {
+        this(playerInventory, 9, 27);
     }
 
     @AssistedInject
-    public SpectraInventory(@Assisted net.minecraft.world.Container inventory, Logger logger) {
-        this(inventory, 0, inventory.getContainerSize(), logger);
+    public SpectraInventory(@Assisted net.minecraft.world.Container inventory) {
+        this(inventory, 0, inventory.getContainerSize());
     }
 
-    private SpectraInventory(net.minecraft.world.Container inventory, int skipSlots, int size, Logger logger) {
-        _logger = logger;
+    private SpectraInventory(net.minecraft.world.Container inventory, int skipSlots, int size) {
         _inventory = inventory;
         _skipSlots = skipSlots;
         _size = size;
@@ -138,9 +134,9 @@ public class SpectraInventory implements Inventory {
     public void configure(Configuration configuration) {
         var blockEntity = getBlockEntity();
         if (blockEntity != null) {
-            var persistantData = blockEntity.getPersistentData();
-            persistantData.putBoolean("better_chests:spread", configuration.spread());
-            persistantData.putBoolean("better_chests:sortOnClose", configuration.sortOnClose());
+            var persistentData = blockEntity.getPersistentData();
+            persistentData.putBoolean("better_chests:spread", configuration.spread());
+            persistentData.putBoolean("better_chests:sortOnClose", configuration.sortOnClose());
         }
     }
 
@@ -160,18 +156,14 @@ public class SpectraInventory implements Inventory {
     }
 
     private ChestBlockEntity getFirstContainer(CompoundContainer container) {
-        _logger.info("Getting first container of compound container");
         try {
             var allFields = CompoundContainer.class.getDeclaredFields();
-            _logger.info("Found " + allFields.length + " fields");
             var firstChestBlock = Arrays.stream(allFields).filter(x -> x.getType() == Container.class).findFirst();
             if (firstChestBlock.isPresent()) {
-                _logger.info("Found field " + firstChestBlock.get().getName());
                 firstChestBlock.get().setAccessible(true);
                 return (ChestBlockEntity) firstChestBlock.get().get(container);
             }
         } catch (SecurityException | IllegalAccessException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;

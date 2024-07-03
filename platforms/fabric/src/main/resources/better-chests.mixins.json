@@ -2,7 +2,9 @@
 	"required": true,
 	"package": "one.spectra.better_chests.mixin",
 	"compatibilityLevel": "JAVA_21",
-	"mixins": [],
+	"mixins": [
+		"SpectraBlockEntity"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	}

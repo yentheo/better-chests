@@ -11,11 +11,19 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.text.Text;
 import one.spectra.better_chests.BetterChestsClient;
+import one.spectra.better_chests.ConfigurationButtonWidget;
 import one.spectra.better_chests.InventoryType;
 import one.spectra.better_chests.SortButtonWidget;
+import one.spectra.better_chests.communications.MessageService;
+import one.spectra.better_chests.communications.requests.GetConfigurationRequest;
+import one.spectra.better_chests.communications.requests.SortRequest;
+import one.spectra.better_chests.communications.responses.GetConfigurationResponse;
 import net.minecraft.client.gui.screen.Screen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutionException;
 
 @Environment(EnvType.CLIENT)
 @Mixin(HandledScreen.class)
@@ -30,13 +38,36 @@ public abstract class ScreenMixin extends Screen {
 	@Shadow
 	protected int backgroundHeight;
 
+	private boolean sortOnClose = false;
+
 	protected ScreenMixin(Text title) {
 		super(Text.empty().append("Test"));
 	}
 
 	@Inject(method = "init", at = @At("TAIL"))
 	private void invsort$init(CallbackInfo callbackinfo) {
+
+		var messageService = BetterChestsClient.INJECTOR.getInstance(MessageService.class);
+
+		var futureResponse = messageService.requestFromServer(GetConfigurationRequest.INSTANCE,
+				GetConfigurationResponse.class);
+
+		Executors.newCachedThreadPool().submit(() -> {
+			try {
+				var response = futureResponse.get();
+				sortOnClose = response.sortOnClose();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+		});
+
 		initialize(callbackinfo);
+	}
+
+	@Inject(method = "close", at = @At("HEAD"))
+	private void invsort$close(CallbackInfo callbackinfo) {
+		if (sortOnClose)
+			ClientPlayNetworking.send(new SortRequest(false));
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))
@@ -74,9 +105,9 @@ public abstract class ScreenMixin extends Screen {
 		if (numSlots >= 63) {
 			var widget2 = new SortButtonWidget(x, this.y + 6, InventoryType.CHEST);
 			this.addDrawableChild(widget2);
-			// var y = this.y + (numSlots > 36 ? (backgroundHeight - 95) : 6);
-			// this.addDrawableChild(new MoveUpButtonWidget(x - 11, y));
-			// this.addDrawableChild(new MoveDownButtonWidget(x - 22, y));
+			var configurationButtonWidget = new ConfigurationButtonWidget(x + 20, this.y + 1, this, client);
+			this.addDrawableChild(configurationButtonWidget);
 		}
+
 	}
 }

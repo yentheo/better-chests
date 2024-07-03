@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.util.Identifier;
-import one.spectra.better_chests.communication.messages.SortRequest;
+import one.spectra.better_chests.communications.requests.SortRequest;
 import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)

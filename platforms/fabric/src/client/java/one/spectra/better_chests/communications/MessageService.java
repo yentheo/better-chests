@@ -6,18 +6,18 @@ import java.util.concurrent.Future;
 
 import com.google.inject.Inject;
 
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.network.packet.CustomPayload;
 
 public class MessageService {
-    private MessageRegistrar messageRegistrar;
+    private ClientMessageRegistrar messageRegistrar;
 
     @Inject
-    public MessageService(MessageRegistrar messageRegistrar) {
+    public MessageService(ClientMessageRegistrar messageRegistrar) {
         this.messageRegistrar = messageRegistrar;
     }
 
-    public <TRequest extends CustomPacketPayload, TResponse extends CustomPacketPayload> Future<TResponse> requestFromServer(TRequest request, Class<TResponse> clazz) {
+    public <TRequest extends CustomPayload, TResponse extends CustomPayload> Future<TResponse> requestFromServer(TRequest request, Class<TResponse> clazz) {
         var completableFuture = new CompletableFuture<TResponse>();
 
         Executors.newCachedThreadPool().submit(() -> {
@@ -25,7 +25,7 @@ public class MessageService {
                 completableFuture.complete(r);
             }, clazz);
         });
-        PacketDistributor.sendToServer(request);
+        ClientPlayNetworking.send(request);
 
         return completableFuture;
     }
