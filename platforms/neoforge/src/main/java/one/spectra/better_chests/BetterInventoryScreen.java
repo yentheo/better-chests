@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
+import one.spectra.better_chests.communications.requests.SortRequest;
 
 public class BetterInventoryScreen extends InventoryScreen {
 

@@ -1,12 +1,19 @@
 package one.spectra.better_chests.inventory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.slf4j.Logger;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.CompoundContainer;
+import net.minecraft.world.Container;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import one.spectra.better_chests.common.inventory.Inventory;
+import one.spectra.better_chests.common.Configuration;
 import one.spectra.better_chests.common.abstractions.ItemStack;
 import one.spectra.better_chests.abstractions.SpectraItemStack;
 
@@ -16,7 +23,6 @@ public class SpectraInventory implements Inventory {
     private int _size;
 
     private Logger _logger;
-
 
     @AssistedInject
     public SpectraInventory(@Assisted net.minecraft.world.entity.player.Inventory playerInventory, Logger logger) {
@@ -40,11 +46,11 @@ public class SpectraInventory implements Inventory {
     }
 
     public void putInSlot(int slot, ItemStack stack) {
-        _inventory.setItem(slot + _skipSlots, (net.minecraft.world.item.ItemStack)stack.getItemStack());
+        _inventory.setItem(slot + _skipSlots, (net.minecraft.world.item.ItemStack) stack.getItemStack());
     }
 
     public void add(ItemStack stack) {
-        addItem((net.minecraft.world.item.ItemStack)stack.getItemStack());
+        addItem((net.minecraft.world.item.ItemStack) stack.getItemStack());
     }
 
     public void clear() {
@@ -118,11 +124,65 @@ public class SpectraInventory implements Inventory {
         return itemStack.getCount() > 0 ? itemStack : null;
     }
 
+    public Configuration getConfiguration() {
+        var blockEntity = getBlockEntity();
+        if (blockEntity != null) {
+            var persistantData = blockEntity.getPersistentData();
+            var spread = getBooleanSafe(persistantData, "better_chests:spread", true);
+            var sortOnClose = getBooleanSafe(persistantData, "better_chests:sortOnClose", false);
+            return new Configuration(spread, sortOnClose);
+        }
+        return new Configuration(true, false);
+    }
+
+    public void configure(Configuration configuration) {
+        var blockEntity = getBlockEntity();
+        if (blockEntity != null) {
+            var persistantData = blockEntity.getPersistentData();
+            persistantData.putBoolean("better_chests:spread", configuration.spread());
+            persistantData.putBoolean("better_chests:sortOnClose", configuration.sortOnClose());
+        }
+    }
+
+    private boolean getBooleanSafe(CompoundTag data, String key, boolean defaultValue) {
+        return data.contains(key) ? data.getBoolean(key) : defaultValue;
+    }
+
+    private BlockEntity getBlockEntity() {
+        if (_inventory instanceof BlockEntity) {
+            return (BlockEntity) _inventory;
+        } else if (_inventory instanceof CompoundContainer) {
+            var compoundContainer = (CompoundContainer) _inventory;
+            return getFirstContainer(compoundContainer);
+        } else {
+            return null;
+        }
+    }
+
+    private ChestBlockEntity getFirstContainer(CompoundContainer container) {
+        _logger.info("Getting first container of compound container");
+        try {
+            var allFields = CompoundContainer.class.getDeclaredFields();
+            _logger.info("Found " + allFields.length + " fields");
+            var firstChestBlock = Arrays.stream(allFields).filter(x -> x.getType() == Container.class).findFirst();
+            if (firstChestBlock.isPresent()) {
+                _logger.info("Found field " + firstChestBlock.get().getName());
+                firstChestBlock.get().setAccessible(true);
+                return (ChestBlockEntity) firstChestBlock.get().get(container);
+            }
+        } catch (SecurityException | IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private int[] getIndexesOfNonFullStacks(net.minecraft.world.item.ItemStack stack) {
         var indexes = new ArrayList<Integer>();
         for (var i = _skipSlots; i < _size + _skipSlots; i++) {
             var itemStackFromInventory = _inventory.getItem(i);
-            if (net.minecraft.world.item.ItemStack.isSameItemSameComponents(stack, itemStackFromInventory) && itemStackFromInventory.getCount() < itemStackFromInventory.getMaxStackSize()) {
+            if (net.minecraft.world.item.ItemStack.isSameItemSameComponents(stack, itemStackFromInventory)
+                    && itemStackFromInventory.getCount() < itemStackFromInventory.getMaxStackSize()) {
                 indexes.add(i);
             }
         }
@@ -140,7 +200,8 @@ public class SpectraInventory implements Inventory {
 
     @Override
     public List<ItemStack> add(List<ItemStack> stacks) {
-        var stacksToAdd = stacks.stream().map(x -> x.getItemStack()).toList().toArray(new net.minecraft.world.item.ItemStack[0]);
+        var stacksToAdd = stacks.stream().map(x -> x.getItemStack()).toList()
+                .toArray(new net.minecraft.world.item.ItemStack[0]);
         var restStacks = addItem(stacksToAdd);
         return restStacks.stream().map(x -> new SpectraItemStack(x)).map(x -> (ItemStack) x).toList();
     }

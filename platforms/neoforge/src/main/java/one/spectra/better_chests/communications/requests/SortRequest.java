@@ -1,4 +1,4 @@
-package one.spectra.better_chests;
+package one.spectra.better_chests.communications.requests;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -10,8 +10,9 @@ public record SortRequest(boolean sortPlayerInventory) implements CustomPacketPa
     public static final CustomPacketPayload.Type<SortRequest> TYPE = new CustomPacketPayload.Type<>(
             ResourceLocation.fromNamespaceAndPath("better-chest", "sort"));
 
-    public static final StreamCodec<ByteBuf, SortRequest> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.BOOL,
-            SortRequest::sortPlayerInventory, SortRequest::new);
+    public static final StreamCodec<ByteBuf, SortRequest> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.BOOL, SortRequest::sortPlayerInventory,
+            SortRequest::new);
 
     @Override
     public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {

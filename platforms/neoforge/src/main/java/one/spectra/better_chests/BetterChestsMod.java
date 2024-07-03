@@ -16,10 +16,15 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import one.spectra.better_chests.abstractions.PlayerFactory;
-import one.spectra.better_chests.common.Sorter;
+import one.spectra.better_chests.communications.MessageRegistrar;
+import one.spectra.better_chests.communications.handlers.ConfigureChestHandler;
+import one.spectra.better_chests.communications.handlers.GetConfigurationHandler;
+import one.spectra.better_chests.communications.handlers.SortRequestHandler;
+import one.spectra.better_chests.communications.requests.ConfigureChestRequest;
+import one.spectra.better_chests.communications.requests.GetConfigurationRequest;
+import one.spectra.better_chests.communications.requests.SortRequest;
+import one.spectra.better_chests.communications.responses.GetConfigurationResponse;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(BetterChestsMod.MODID)
@@ -27,7 +32,8 @@ public class BetterChestsMod {
     // Define mod id in a common place for everything to reference
     public static final String MODID = "better_chests";
     public static final Logger LOGGER = LogUtils.getLogger();
-	public static Injector INJECTOR;
+    public static Injector INJECTOR;
+    public static Injector NETWORK_INJECTOR;
 
     public BetterChestsMod(IEventBus modEventBus) {
         INJECTOR = Guice.createInjector(new BetterChestsModule());
@@ -44,21 +50,20 @@ public class BetterChestsMod {
     public void commonSetup(FMLCommonSetupEvent event) {
         LOGGER.info("Better Chests are enabled");
     }
-    
+
     public void onRegisterNetworkPackets(RegisterPayloadHandlersEvent event) {
         LOGGER.info("Registering communication common");
         LOGGER.info("Registering communication");
         // Sets the current network version
         final PayloadRegistrar registrar = event.registrar("better-chests").versioned("1").optional();
-        registrar.playToServer(SortRequest.TYPE, SortRequest.STREAM_CODEC, new IPayloadHandler<SortRequest>() {
-            public void handle(SortRequest payload, net.neoforged.neoforge.network.handling.IPayloadContext context) {
-                var playerFactory = INJECTOR.getInstance(PlayerFactory.class);
-                var player = playerFactory.createPlayer(context.player());
-                var sorter = INJECTOR.getInstance(Sorter.class);
-                var inventoryToSort = payload.sortPlayerInventory() ? player.getInventory() : player.getOpenContainer();
-                sorter.sort(inventoryToSort, true, true);
-            };
-        });
+        NETWORK_INJECTOR = INJECTOR.createChildInjector(new BetterChestsNetworkModule(registrar));
+        var messageRegistrar = NETWORK_INJECTOR.getInstance(MessageRegistrar.class);
+
+        messageRegistrar.registerPlayToServer(SortRequest.TYPE, SortRequest.STREAM_CODEC, SortRequestHandler.class);
+        messageRegistrar.registerPlayToServer(ConfigureChestRequest.TYPE, ConfigureChestRequest.STREAM_CODEC, ConfigureChestHandler.class);
+
+        messageRegistrar.registerPlayToServer(GetConfigurationRequest.TYPE, GetConfigurationRequest.STREAM_CODEC, GetConfigurationHandler.class);
+        messageRegistrar.registerResponseToClient(GetConfigurationResponse.class, GetConfigurationResponse.TYPE, GetConfigurationResponse.STREAM_CODEC);
     }
 
     @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

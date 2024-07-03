@@ -13,6 +13,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Names;
 import com.mojang.logging.LogUtils;
 
+import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import one.spectra.better_chests.abstractions.PlayerFactory;
 import one.spectra.better_chests.abstractions.SpectraPlayer;
 import one.spectra.better_chests.common.Sorter;
@@ -24,6 +25,10 @@ import one.spectra.better_chests.common.inventory.fillers.DefaultFiller;
 import one.spectra.better_chests.common.inventory.fillers.Filler;
 import one.spectra.better_chests.common.inventory.fillers.InventoryFillerProvider;
 import one.spectra.better_chests.common.inventory.fillers.RowFiller;
+import one.spectra.better_chests.communications.handlers.GetConfigurationHandler;
+import one.spectra.better_chests.communications.handlers.SortRequestHandler;
+import one.spectra.better_chests.communications.requests.GetConfigurationRequest;
+import one.spectra.better_chests.communications.requests.SortRequest;
 import one.spectra.better_chests.inventory.InventoryCreator;
 import one.spectra.better_chests.inventory.InventoryFactory;
 import one.spectra.better_chests.inventory.SpectraInventory;
@@ -47,7 +52,11 @@ public class BetterChestsModule extends AbstractModule {
         bind(RowFiller.class);
         bind(ColumnFiller.class);
 
-        
+        bind(new TypeLiteral<IPayloadHandler<SortRequest>>() {
+        }).to(SortRequestHandler.class);
+        bind(new TypeLiteral<IPayloadHandler<GetConfigurationRequest>>() {
+        }).to(GetConfigurationHandler.class);
+
         install(new FactoryModuleBuilder()
                 .implement(Player.class, SpectraPlayer.class)
                 .build(PlayerFactory.class));
