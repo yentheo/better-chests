@@ -128,7 +128,7 @@ public class SpectraInventory implements Inventory {
             var sortOnClose = getBooleanSafe(persistantData, "better_chests:sortOnClose", false);
             return new Configuration(spread, sortOnClose);
         }
-        return new Configuration(true, false);
+        return new Configuration(false, false);
     }
 
     public void configure(Configuration configuration) {

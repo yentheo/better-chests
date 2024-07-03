@@ -44,7 +44,7 @@ public class Sorter {
 
         var filler = _inventoryFillerProvider.getInventoryFiller(inventory, groupedStacks);
 
-        var spread = defaultSpread;
+        var spread = inventory.getConfiguration().spread();
 
         filler.fill(inventory, groupedStacks, spread);
     }

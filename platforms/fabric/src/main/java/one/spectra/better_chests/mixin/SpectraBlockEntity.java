@@ -5,7 +5,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -13,13 +12,10 @@ import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.util.math.BlockPos;
-import one.spectra.better_chests.BetterChests;
 import one.spectra.better_chests.ConfigurationBlockEntity;
 import one.spectra.better_chests.common.Configuration;
-import net.fabricmc.api.EnvType;
 
 
-@Environment(EnvType.CLIENT)
 @Mixin(LockableContainerBlockEntity.class)
 public class SpectraBlockEntity extends BlockEntity implements ConfigurationBlockEntity {
 

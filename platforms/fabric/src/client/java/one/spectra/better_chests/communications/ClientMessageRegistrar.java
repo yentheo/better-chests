@@ -29,7 +29,6 @@ public class ClientMessageRegistrar {
 
     public <T extends CustomPayload> ClientMessageRegistrar registerResponseToClient(Class<T> clazz, Id<T> id,
             PacketCodec<RegistryByteBuf, T> codec) {
-        clientPayloadRegistrar.register(id, codec);
         ClientPlayNetworking.registerGlobalReceiver(id, new ClientPlayNetworking.PlayPayloadHandler<T>() {
 
             @Override

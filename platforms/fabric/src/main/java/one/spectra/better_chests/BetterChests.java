@@ -36,9 +36,11 @@ public class BetterChests implements ModInitializer {
         INJECTOR = Guice.createInjector(new BetterChestsModule(PayloadTypeRegistry.playC2S(), PayloadTypeRegistry.playS2C()));
 
 		var messageRegistrar = INJECTOR.getInstance(MessageRegistrar.class);
-		messageRegistrar.registerPlayToServer(SortRequest.ID, SortRequest.CODEC, SortRequestHandler.class);
-		messageRegistrar.registerPlayToServer(GetConfigurationRequest.ID, GetConfigurationRequest.CODEC, GetConfigurationHandler.class);
-		messageRegistrar.registerPlayToServer(ConfigureChestRequest.ID, ConfigureChestRequest.CODEC, ConfigureChestHandler.class);
+		messageRegistrar
+		.registerPlayToServer(SortRequest.ID, SortRequest.CODEC, SortRequestHandler.class)
+		.registerPlayToServer(GetConfigurationRequest.ID, GetConfigurationRequest.CODEC, GetConfigurationHandler.class)
+		.registerPlayToServer(ConfigureChestRequest.ID, ConfigureChestRequest.CODEC, ConfigureChestHandler.class)
+		.registerPlayFromServer(GetConfigurationResponse.ID, GetConfigurationResponse.CODEC);
 
 	}
 }

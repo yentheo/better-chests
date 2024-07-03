@@ -6,6 +6,7 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 
 import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.item.Items;
 import one.spectra.better_chests.common.inventory.Inventory;
@@ -39,18 +40,22 @@ public class SpectraInventory implements Inventory {
 
     private ConfigurationBlockEntity getBlockEntity() {
         BetterChests.LOGGER.info(String.valueOf(_inventory));
-        var blockEntity = _inventory instanceof DoubleInventory ? getFirstContainer((DoubleInventory)_inventory) : (ChestBlockEntity)_inventory;
+        if (_inventory instanceof PlayerInventory)
+            return null;
+        var blockEntity = _inventory instanceof DoubleInventory ? getFirstContainer((DoubleInventory) _inventory)
+                : (ChestBlockEntity) _inventory;
         if (blockEntity instanceof ConfigurationBlockEntity) {
-            BetterChests.LOGGER.info(String.valueOf((ConfigurationBlockEntity)blockEntity));
+            BetterChests.LOGGER.info(String.valueOf((ConfigurationBlockEntity) blockEntity));
             return (ConfigurationBlockEntity) blockEntity;
-        } 
+        }
         return null;
     }
 
     private ChestBlockEntity getFirstContainer(DoubleInventory container) {
         try {
             var allFields = DoubleInventory.class.getDeclaredFields();
-            var firstChestBlock = Arrays.stream(allFields).filter(x -> x.getType() == net.minecraft.inventory.Inventory.class).findFirst();
+            var firstChestBlock = Arrays.stream(allFields)
+                    .filter(x -> x.getType() == net.minecraft.inventory.Inventory.class).findFirst();
             if (firstChestBlock.isPresent()) {
                 firstChestBlock.get().setAccessible(true);
                 return (ChestBlockEntity) firstChestBlock.get().get(container);
@@ -103,6 +108,8 @@ public class SpectraInventory implements Inventory {
 
     public Configuration getConfiguration() {
         var blockEntity = getBlockEntity();
+        if (blockEntity == null)
+            return new Configuration(false, false);
 
         return blockEntity.getConfiguration();
     }

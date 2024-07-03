@@ -15,11 +15,15 @@ import net.minecraft.network.packet.CustomPayload.Id;
 public class MessageRegistrar {
 
     private PayloadTypeRegistry<RegistryByteBuf> serverPayloadRegistrar;
+    private PayloadTypeRegistry<RegistryByteBuf> clientPayloadRegistrar;
     private Injector injector;
 
     @Inject
-    public MessageRegistrar(@Named("server") PayloadTypeRegistry<RegistryByteBuf> serverPayloadRegistrar, Injector injector) {
+    public MessageRegistrar(@Named("server") PayloadTypeRegistry<RegistryByteBuf> serverPayloadRegistrar,
+            @Named("client") PayloadTypeRegistry<RegistryByteBuf> clientPayloadRegistrar,
+            Injector injector) {
         this.serverPayloadRegistrar = serverPayloadRegistrar;
+        this.clientPayloadRegistrar = clientPayloadRegistrar;
         this.injector = injector;
     }
 
@@ -28,6 +32,13 @@ public class MessageRegistrar {
         this.serverPayloadRegistrar.register(id, codec);
         var handler = injector.getInstance(handlerClass);
         ServerPlayNetworking.registerGlobalReceiver(id, handler);
+        return this;
+    }
+
+    public <T extends CustomPayload, THandler extends PlayPayloadHandler<T>> MessageRegistrar registerPlayFromServer(
+            Id<T> id, PacketCodec<RegistryByteBuf, T> codec) {
+        this.clientPayloadRegistrar.register(id, codec);
+        this.serverPayloadRegistrar.register(id, codec);
         return this;
     }
 }
