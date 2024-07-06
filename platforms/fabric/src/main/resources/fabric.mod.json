@@ -3,13 +3,12 @@
 	"id": "better-chests",
 	"version": "${version}",
 	"name": "Better Chests",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Adds some non-breaking, quality of life features to inventories.",
 	"authors": [
-		"Me!"
+		"Yenthe Oerlemans"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/yentheo/better-chests"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/better-chests/icon.png",
@@ -35,7 +34,5 @@
 		"java": ">=21",
 		"fabric-api": "*"
 	},
-	"suggests": {
-		"another-mod": "*"
-	}
+	"suggests": {}
 }

@@ -4,7 +4,6 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.neoforged.gradle.userdev' version '7.0.142'
-    id "com.modrinth.minotaur" version "2.+"
 }
 
 // tasks.named('wrapper', Wrapper).configure {
@@ -192,16 +191,4 @@ idea {
         downloadSources = true
         downloadJavadoc = true
     }
-}
-
-
-modrinth {
-    token = 'mrp_Sqi0TL6IMwCiL64uvIEBMO6CuWX3vhrOGXjWrUA5PIQha7RbGzIKnzwT8N9F' // Please use an environment variable for this! The default is `$MODRINTH_TOKEN`.
-    projectId = 'dYXpr2Hl' // The ID of your Modrinth project. Slugs will not work.
-    versionNumber = '0.0.3-1.21' // The (preferably SemVer) version of the mod. If not specified, it'll use the `version` declaration
-    versionName = 'Initial release' // The version title. If not specified, it'll use the version number
-    // uploadFile = jar // Tells Minotaur to use the remapped jar
-    gameVersions = ['1.21'] // An array of game versions the version supports
-    loaders = ['neoforge'] // Self-explanatory.
-    dependencies = []
 }
