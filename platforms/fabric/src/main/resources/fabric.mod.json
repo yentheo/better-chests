@@ -8,7 +8,9 @@
 		"Yenthe Oerlemans"
 	],
 	"contact": {
-		"sources": "https://github.com/yentheo/better-chests"
+		"homepage": "https://github.com/yentheo/better-chests",
+		"sources": "https://github.com/yentheo/better-chests",
+		"issues": "https://github.com/yentheo/better-chests/issues"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/better-chests/icon.png",
