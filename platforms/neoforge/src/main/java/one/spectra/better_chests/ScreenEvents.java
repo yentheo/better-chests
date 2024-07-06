@@ -18,8 +18,8 @@ public class ScreenEvents {
             var containerScreen = (ContainerScreen) screen;
             event.setNewScreen(new BetterContainerScreen(containerScreen.getMenu(), new Inventory(minecraft.player), containerScreen.getTitle()));
         } else if (screen instanceof ShulkerBoxScreen) {
-            // var containerScreen = (ShulkerBoxScreen) screen;
-            // event.setNewScreen(new BetterShulkerBoxScreen(containerScreen.getMenu(), new Inventory(minecraft.player), containerScreen.getTitle()));
+            var containerScreen = (ShulkerBoxScreen) screen;
+            event.setNewScreen(new BetterShulkerContainerScreen(containerScreen.getMenu(), new Inventory(minecraft.player), containerScreen.getTitle()));
         } else if (screen instanceof InventoryScreen) {
             event.setNewScreen(new BetterInventoryScreen(minecraft.player));
         }
