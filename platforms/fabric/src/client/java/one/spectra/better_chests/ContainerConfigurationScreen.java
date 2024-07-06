@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CheckboxWidget;
@@ -24,6 +25,7 @@ public class ContainerConfigurationScreen extends Screen {
 
     private CheckboxWidget spreadCheckboxWidget;
     private CheckboxWidget sortOnCloseCheckboxWidget;
+    private ButtonWidget saveChangesButtonWidget;
 
     protected ContainerConfigurationScreen(Screen parent) {
         super(Text.literal("Configuration"));
@@ -42,14 +44,14 @@ public class ContainerConfigurationScreen extends Screen {
                 .build();
         addDrawableChild(sortOnCloseCheckboxWidget);
 
-        var buttonSaveChanges = ButtonWidget.builder(Text.literal("Save changes"), button -> {
+        saveChangesButtonWidget = ButtonWidget.builder(Text.literal("Save changes"), button -> {
             ClientPlayNetworking.send(
                     new ConfigureChestRequest(spreadCheckboxWidget.isChecked(), sortOnCloseCheckboxWidget.isChecked()));
             this.close();
         })
                 .position(32, 114)
                 .build();
-        addDrawableChild(buttonSaveChanges);
+        addDrawableChild(saveChangesButtonWidget);
 
         var futureResponse = messageService.requestFromServer(GetConfigurationRequest.INSTANCE,
                 GetConfigurationResponse.class);
@@ -65,6 +67,21 @@ public class ContainerConfigurationScreen extends Screen {
                 e.printStackTrace();
             }
         });
+    }
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        var screenCenterX = width / 2;
+        var screenCenterY = height / 2;
+        var saveChangesButtonCenterX = saveChangesButtonWidget.getWidth() / 2;
+        spreadCheckboxWidget.setX(screenCenterX - saveChangesButtonCenterX);
+        spreadCheckboxWidget.setY(screenCenterY - sortOnCloseCheckboxWidget.getHeight() - 8);
+        sortOnCloseCheckboxWidget.setX(screenCenterX - saveChangesButtonCenterX);
+        sortOnCloseCheckboxWidget.setY(screenCenterY);
+        saveChangesButtonWidget.setX(screenCenterX - saveChangesButtonCenterX);
+        saveChangesButtonWidget.setY(screenCenterY + sortOnCloseCheckboxWidget.getHeight() + 8);
+        
+        super.render(context, mouseX, mouseY, delta);
     }
 
     @Override
