@@ -3,8 +3,7 @@ package one.spectra.better_chests;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
-import com.mojang.logging.LogUtils;
-
+import ca.weblite.objc.Message;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -19,6 +18,8 @@ import one.spectra.better_chests.communications.responses.GetConfigurationRespon
 
 public class ContainerConfigurationScreen extends Screen {
 
+    private MessageService messageService;
+
     private Checkbox _spreadCheckbox;
     private Checkbox _sortOnCloseCheckbox;
     private Screen _parentScreen;
@@ -26,21 +27,7 @@ public class ContainerConfigurationScreen extends Screen {
     protected ContainerConfigurationScreen(Component p_96550_, Screen parentScreen) {
         super(p_96550_);
         _parentScreen = parentScreen;
-        var messageService = BetterChestsMod.NETWORK_INJECTOR.getInstance(MessageService.class);
-        var futureResponse = messageService.requestFromServer(new GetConfigurationRequest(),
-                GetConfigurationResponse.class);
-        Executors.newCachedThreadPool().submit(() -> {
-            try {
-                var response = futureResponse.get();
-                LogUtils.getLogger().info(String.valueOf(response.spread()));
-                if (response.spread() && !_spreadCheckbox.selected())
-                    _spreadCheckbox.onPress();
-                if (response.sortOnClose() && !_sortOnCloseCheckbox.selected())
-                    _sortOnCloseCheckbox.onPress();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        });
+        this.messageService = BetterChestsMod.NETWORK_INJECTOR.getInstance(MessageService.class);
     }
 
     @Override
@@ -69,6 +56,21 @@ public class ContainerConfigurationScreen extends Screen {
             Minecraft.getInstance().setScreen(_parentScreen);
         }).pos(32, 112).build();
         this.addRenderableWidget(saveChangesButton);
+        var futureResponse = messageService.requestFromServer(new GetConfigurationRequest(),
+                GetConfigurationResponse.class);
+        Executors.newCachedThreadPool().submit(() -> {
+            try {
+                var response = futureResponse.get();
+                // BetterChestsMod.LOGGER.info("Received chest configuration.");
+                // BetterChestsMod.LOGGER.info("spread: {}, sortOnClose: {}", response.spread(), response.sortOnClose());
+                if (response.spread() != _spreadCheckbox.selected())
+                    _spreadCheckbox.onPress();
+                if (response.sortOnClose() != _sortOnCloseCheckbox.selected())
+                    _sortOnCloseCheckbox.onPress();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override

@@ -34,7 +34,8 @@ public class BetterContainerScreen extends ContainerScreen {
         Executors.newCachedThreadPool().submit(() -> {
             try {
                 var response = futureResponse.get();
-                LogUtils.getLogger().info(String.valueOf(response.spread()));
+                // BetterChestsMod.LOGGER.info("Received chest configuration.");
+                // BetterChestsMod.LOGGER.info("spread: {}, sortOnClose: {}", response.spread(), response.sortOnClose());
                 sortOnClose = response.sortOnClose();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

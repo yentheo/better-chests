@@ -28,21 +28,6 @@ public class ConfigurationScreen extends Screen {
     protected ConfigurationScreen(Screen parent) {
         super(Text.literal("Configuration"));
         messageService = BetterChestsClient.INJECTOR.getInstance(MessageService.class);
-
-        var futureResponse = messageService.requestFromServer(GetConfigurationRequest.INSTANCE,
-                GetConfigurationResponse.class);
-
-        Executors.newCachedThreadPool().submit(() -> {
-            try {
-                var response = futureResponse.get();
-                if (response.spread() && !spreadCheckboxWidget.isSelected())
-                    spreadCheckboxWidget.onPress();
-                if (response.sortOnClose() && !sortOnCloseCheckboxWidget.isSelected())
-                    sortOnCloseCheckboxWidget.onPress();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        });
         this.parent = parent;
     }
 
@@ -65,6 +50,21 @@ public class ConfigurationScreen extends Screen {
                 .position(32, 114)
                 .build();
         addDrawableChild(buttonSaveChanges);
+
+        var futureResponse = messageService.requestFromServer(GetConfigurationRequest.INSTANCE,
+                GetConfigurationResponse.class);
+
+        Executors.newCachedThreadPool().submit(() -> {
+            try {
+                var response = futureResponse.get();
+                if (response.spread() != spreadCheckboxWidget.isSelected())
+                    spreadCheckboxWidget.onPress();
+                if (response.sortOnClose() != sortOnCloseCheckboxWidget.isSelected())
+                    sortOnCloseCheckboxWidget.onPress();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override

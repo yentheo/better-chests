@@ -3,9 +3,9 @@
   "configurations": [
     {
       "type": "java",
-      "name": "Minecraft Client",
+      "name": "Minecraft Client (Fabric)",
       "request": "launch",
-      "cwd": "${workspaceFolder}/platforms/fabric/run",
+      "cwd": "${workspaceFolder}\\platforms\\fabric\\run",
       "console": "integratedTerminal",
       "stopOnEntry": false,
       "mainClass": "net.fabricmc.devlaunchinjector.Main",
@@ -16,9 +16,9 @@
     },
     {
       "type": "java",
-      "name": "Minecraft Server",
+      "name": "Minecraft Server (Fabric)",
       "request": "launch",
-      "cwd": "${workspaceFolder}/run",
+      "cwd": "${workspaceFolder}\\platforms\\fabric\\run",
       "console": "integratedTerminal",
       "stopOnEntry": false,
       "mainClass": "net.fabricmc.devlaunchinjector.Main",

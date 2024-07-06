@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
+import one.spectra.better_chests.BetterChestsMod;
 import one.spectra.better_chests.abstractions.PlayerFactory;
 import one.spectra.better_chests.communications.requests.GetConfigurationRequest;
 import one.spectra.better_chests.communications.responses.GetConfigurationResponse;
@@ -25,6 +26,8 @@ public class GetConfigurationHandler implements IPayloadHandler<GetConfiguration
         var openContainer = player.getOpenContainer();
         if (context.player() instanceof ServerPlayer) {
             var configuration = openContainer.getConfiguration();
+            // BetterChestsMod.LOGGER.info("Returning chest configuration.");
+            // BetterChestsMod.LOGGER.info("spread: {}, sortOnClose: {}", configuration.spread(), configuration.sortOnClose());
             PacketDistributor.sendToPlayer((ServerPlayer)context.player(), new GetConfigurationResponse(configuration.spread(), configuration.sortOnClose()));
         }
     }

@@ -5,6 +5,8 @@ import java.util.List;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 
+import net.minecraft.block.entity.BarrelBlockEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.DoubleInventory;
@@ -12,7 +14,6 @@ import net.minecraft.item.Items;
 import one.spectra.better_chests.common.inventory.Inventory;
 import one.spectra.better_chests.common.Configuration;
 import one.spectra.better_chests.common.abstractions.ItemStack;
-import one.spectra.better_chests.BetterChests;
 import one.spectra.better_chests.ConfigurationBlockEntity;
 import one.spectra.better_chests.abstractions.SpectraItemStack;
 import java.util.Arrays;
@@ -38,18 +39,39 @@ public class SpectraInventory implements Inventory {
         _size = size;
     }
 
-    private ConfigurationBlockEntity getBlockEntity() {
+    private ConfigurationBlockEntity getConfigurationBlockEntity() {
+        // no block entity for player inventory
         if (_inventory instanceof PlayerInventory)
             return null;
-        var blockEntity = _inventory instanceof DoubleInventory ? getFirstContainer((DoubleInventory) _inventory)
-                : (ChestBlockEntity) _inventory;
-        if (blockEntity instanceof ConfigurationBlockEntity) {
+
+        var blockEntity = getBlockEntity();
+        if (blockEntity != null && blockEntity instanceof ConfigurationBlockEntity) {
             return (ConfigurationBlockEntity) blockEntity;
         }
         return null;
     }
 
-    private ChestBlockEntity getFirstContainer(DoubleInventory container) {
+    private BlockEntity getBlockEntity() {
+        // if it's a double inventory, we look for the block entity of the first chest
+        // to save config to that entity
+        if (_inventory instanceof DoubleInventory)
+            return getFirstBlockEntity((DoubleInventory) _inventory);
+
+        if (_inventory instanceof ChestBlockEntity)
+            return (ChestBlockEntity) _inventory;
+
+        if (_inventory instanceof BarrelBlockEntity)
+            return (BarrelBlockEntity) _inventory;
+
+        return null;
+    }
+
+    /**
+     * Retrieves the first block entity of a double chest.
+     * @param container a double inventory
+     * @return The block entity of the first chest
+     */
+    private ChestBlockEntity getFirstBlockEntity(DoubleInventory container) {
         try {
             var allFields = DoubleInventory.class.getDeclaredFields();
             var firstChestBlock = Arrays.stream(allFields)
@@ -105,7 +127,7 @@ public class SpectraInventory implements Inventory {
     }
 
     public Configuration getConfiguration() {
-        var blockEntity = getBlockEntity();
+        var blockEntity = getConfigurationBlockEntity();
         if (blockEntity == null)
             return new Configuration(false, false);
 
@@ -113,7 +135,7 @@ public class SpectraInventory implements Inventory {
     }
 
     public void configure(Configuration configuration) {
-        var blockEntity = getBlockEntity();
+        var blockEntity = getConfigurationBlockEntity();
         blockEntity.setConfiguration(configuration);
     }
 
