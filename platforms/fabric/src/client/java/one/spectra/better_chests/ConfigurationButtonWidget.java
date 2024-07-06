@@ -26,6 +26,6 @@ public class ConfigurationButtonWidget extends TexturedButtonWidget {
 
     @Override
     public void onPress() {
-        client.setScreen(new ConfigurationScreen(parent));
+        client.setScreen(new ContainerConfigurationScreen(parent));
     }
 }

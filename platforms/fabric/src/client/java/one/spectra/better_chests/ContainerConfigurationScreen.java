@@ -16,7 +16,7 @@ import one.spectra.better_chests.communications.responses.GetConfigurationRespon
 import java.util.concurrent.Executors;
 
 @Environment(EnvType.CLIENT)
-public class ConfigurationScreen extends Screen {
+public class ContainerConfigurationScreen extends Screen {
 
     private Screen parent;
 
@@ -25,7 +25,7 @@ public class ConfigurationScreen extends Screen {
     private CheckboxWidget spreadCheckboxWidget;
     private CheckboxWidget sortOnCloseCheckboxWidget;
 
-    protected ConfigurationScreen(Screen parent) {
+    protected ContainerConfigurationScreen(Screen parent) {
         super(Text.literal("Configuration"));
         messageService = BetterChestsClient.INJECTOR.getInstance(MessageService.class);
         this.parent = parent;
