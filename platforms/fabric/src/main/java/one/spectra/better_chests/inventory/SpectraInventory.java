@@ -1,7 +1,6 @@
 package one.spectra.better_chests.inventory;
 
 import java.util.ArrayList;
-import java.util.List;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 
@@ -157,6 +156,5 @@ public class SpectraInventory implements Inventory {
     public void configure(Configuration configuration) {
         var blockEntity = getConfigurationBlockEntity();
         blockEntity.setConfiguration(configuration);
-        var e = (BlockEntity) blockEntity;
     }
 }

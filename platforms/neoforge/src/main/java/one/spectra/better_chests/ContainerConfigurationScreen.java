@@ -3,7 +3,6 @@ package one.spectra.better_chests;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
-import ca.weblite.objc.Message;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;

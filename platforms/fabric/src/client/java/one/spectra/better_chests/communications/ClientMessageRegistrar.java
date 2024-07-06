@@ -17,13 +17,11 @@ import java.util.function.Consumer;
 
 public class ClientMessageRegistrar {
 
-    private PayloadTypeRegistry<RegistryByteBuf> clientPayloadRegistrar;
     private Dictionary<Class<CustomPayload>, Consumer<CustomPayload>> _oneTimeConsumers;
 
     @Inject
     public ClientMessageRegistrar(@Named("client") PayloadTypeRegistry<RegistryByteBuf> clientPayloadRegistrar,
             Injector injector) {
-        this.clientPayloadRegistrar = clientPayloadRegistrar;
         _oneTimeConsumers = new Hashtable<Class<CustomPayload>, Consumer<CustomPayload>>();
     }
 

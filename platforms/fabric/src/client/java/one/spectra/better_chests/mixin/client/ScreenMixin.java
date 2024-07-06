@@ -11,6 +11,7 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.text.Text;
+import one.spectra.better_chests.BetterChests;
 import one.spectra.better_chests.BetterChestsClient;
 import one.spectra.better_chests.ConfigurationButtonWidget;
 import one.spectra.better_chests.InventoryType;
@@ -87,6 +88,8 @@ public abstract class ScreenMixin extends Screen {
 			Executors.newCachedThreadPool().submit(() -> {
 				try {
 					var response = futureResponse.get();
+					BetterChests.LOGGER.debug("Received chest configuration.");
+					BetterChests.LOGGER.debug("spread: {}, sortOnClose: {}", response.spread(), response.sortOnClose());
 					sortOnClose = response.sortOnClose();
 				} catch (InterruptedException | ExecutionException e) {
 					e.printStackTrace();

@@ -3,8 +3,6 @@ package one.spectra.better_chests;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
-import com.mojang.logging.LogUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
@@ -34,8 +32,6 @@ public class BetterContainerScreen extends ContainerScreen {
         Executors.newCachedThreadPool().submit(() -> {
             try {
                 var response = futureResponse.get();
-                // BetterChestsMod.LOGGER.info("Received chest configuration.");
-                // BetterChestsMod.LOGGER.info("spread: {}, sortOnClose: {}", response.spread(), response.sortOnClose());
                 sortOnClose = response.sortOnClose();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

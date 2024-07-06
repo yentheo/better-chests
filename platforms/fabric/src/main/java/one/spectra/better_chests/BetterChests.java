@@ -2,9 +2,6 @@ package one.spectra.better_chests;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import one.spectra.better_chests.abstractions.PlayerFactory;
-import one.spectra.better_chests.common.Sorter;
 import one.spectra.better_chests.communications.MessageRegistrar;
 import one.spectra.better_chests.communications.handlers.ConfigureChestHandler;
 import one.spectra.better_chests.communications.handlers.GetConfigurationHandler;
