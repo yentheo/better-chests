@@ -18,6 +18,7 @@ import one.spectra.better_chests.abstractions.PlayerFactory;
 import one.spectra.better_chests.abstractions.SpectraPlayer;
 import one.spectra.better_chests.common.Sorter;
 import one.spectra.better_chests.common.abstractions.Player;
+import one.spectra.better_chests.common.inventory.InMemoryInventory;
 import one.spectra.better_chests.common.inventory.Inventory;
 import one.spectra.better_chests.common.inventory.Spreader;
 import one.spectra.better_chests.common.inventory.fillers.ColumnFiller;
@@ -31,6 +32,7 @@ import one.spectra.better_chests.communications.requests.GetConfigurationRequest
 import one.spectra.better_chests.communications.requests.SortRequest;
 import one.spectra.better_chests.inventory.InventoryCreator;
 import one.spectra.better_chests.inventory.InventoryFactory;
+import one.spectra.better_chests.inventory.SpectraInMemoryInventory;
 import one.spectra.better_chests.inventory.SpectraInventory;
 import one.spectra.better_chests.inventory.SpectraInventoryCreator;
 
@@ -62,6 +64,7 @@ public class BetterChestsModule extends AbstractModule {
                 .build(PlayerFactory.class));
         install(new FactoryModuleBuilder()
                 .implement(Inventory.class, SpectraInventory.class)
+                .implement(InMemoryInventory.class, SpectraInMemoryInventory.class)
                 .build(InventoryFactory.class));
 
         bind(new TypeLiteral<List<Filler>>() {

@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.PlayerScreenHandler;
+import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.text.Text;
 import one.spectra.better_chests.BetterChestsClient;
 import one.spectra.better_chests.ConfigurationButtonWidget;
@@ -71,8 +72,9 @@ public abstract class ScreenMixin extends Screen {
 
 		var isGenericContainerScreen = client.player.currentScreenHandler instanceof GenericContainerScreenHandler;
 		var isPlayerScreen = client.player.currentScreenHandler instanceof PlayerScreenHandler;
+		var isShulkerScreen = client.player.currentScreenHandler instanceof ShulkerBoxScreenHandler;
 
-		if (!isGenericContainerScreen && !isPlayerScreen) {
+		if (!isGenericContainerScreen && !isPlayerScreen && !isShulkerScreen) {
 			return;
 		}
 
@@ -103,8 +105,10 @@ public abstract class ScreenMixin extends Screen {
 		if (numSlots >= 63) {
 			var widget2 = new SortButtonWidget(x, this.y + 6, InventoryType.CHEST);
 			this.addDrawableChild(widget2);
-			var configurationButtonWidget = new ConfigurationButtonWidget(x + 20, this.y + 1, this, client);
-			this.addDrawableChild(configurationButtonWidget);
+			if (!isShulkerScreen) {
+				var configurationButtonWidget = new ConfigurationButtonWidget(x + 20, this.y + 1, this, client);
+				this.addDrawableChild(configurationButtonWidget);
+			}
 		}
 
 	}

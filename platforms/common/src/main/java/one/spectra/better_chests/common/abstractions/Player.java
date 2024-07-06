@@ -5,5 +5,4 @@ import one.spectra.better_chests.common.inventory.Inventory;
 public interface Player {
     Inventory getOpenContainer();
     Inventory getInventory();
-    <TMessage> void sendTo(TMessage message);
 }

@@ -1,6 +1,9 @@
 package one.spectra.better_chests.inventory;
 
 import com.google.inject.Inject;
+
+import net.minecraft.screen.ShulkerBoxScreenHandler;
+import one.spectra.better_chests.common.inventory.InMemoryInventory;
 import one.spectra.better_chests.common.inventory.Inventory;
 
 public class SpectraInventoryCreator implements InventoryCreator, one.spectra.better_chests.common.inventory.InventoryCreator {
@@ -12,18 +15,19 @@ public class SpectraInventoryCreator implements InventoryCreator, one.spectra.be
         _inventoryFactory = inventoryFactory;
     }
 
-    public Inventory create(int size) {
-        var memoryInventory = new net.minecraft.inventory.SimpleInventory(size);
-        return this.create(memoryInventory);
+    @Override
+    public InMemoryInventory create(int size) {
+        var inMemoryInventory = new net.minecraft.inventory.SimpleInventory(size);
+        return _inventoryFactory.create(inMemoryInventory);
     }
 
+    @Override
     public Inventory create(net.minecraft.inventory.Inventory container) {
         return _inventoryFactory.create(container);
     }
 
-    public Inventory create(Inventory inventory) {
-        var copied = create(inventory.getSize());
-        copied.add(inventory.getItemStacks());
-        return copied;
+    @Override
+    public Inventory create(ShulkerBoxScreenHandler shulkerBoxScreenHandler) {
+        return _inventoryFactory.create(shulkerBoxScreenHandler);
     }
 }

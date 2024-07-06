@@ -3,7 +3,6 @@ package one.spectra.better_chests.abstractions;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ShulkerBoxMenu;
 import one.spectra.better_chests.common.inventory.Inventory;
@@ -38,11 +37,5 @@ public class SpectraPlayer implements Player {
 
     public Inventory getInventory() {
         return _inventoryFactory.create(_player.getInventory());
-    }
-
-    @Override
-    public <TMessage> void sendTo(TMessage message) {
-        if (_player instanceof ServerPlayer) {
-        }
     }
 }

@@ -87,6 +87,5 @@ public class ContainerConfigurationScreen extends Screen {
     @Override
     public void close() {
         client.setScreen(parent);
-        super.close();
     }
 }

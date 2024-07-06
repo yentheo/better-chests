@@ -5,7 +5,7 @@ import com.google.inject.assistedinject.Assisted;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.screen.ShulkerBoxScreenHandler;
 import one.spectra.better_chests.common.inventory.Inventory;
 import one.spectra.better_chests.common.abstractions.Player;
 import one.spectra.better_chests.inventory.InventoryCreator;
@@ -28,18 +28,14 @@ public class SpectraPlayer implements Player {
             var screenHandler = (GenericContainerScreenHandler)_player.currentScreenHandler;
             return _inventoryCreator.create(screenHandler.getInventory());
         }
+        if (_player.currentScreenHandler instanceof ShulkerBoxScreenHandler) {
+            var screenHandler = (ShulkerBoxScreenHandler)_player.currentScreenHandler;
+            return _inventoryCreator.create(screenHandler);
+        }
         return null;
     }
 
     public Inventory getInventory() {
         return _inventoryFactory.create(_player.getInventory());
-    }
-
-    @Override
-    public <TMessage> void sendTo(TMessage message) {
-        if (_player instanceof ServerPlayerEntity) {
-            // ServerPlayNetworking.send(_player, null);
-            // BetterChestsPacketHandler.INSTANCE.sendTo(message, p.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-        }
     }
 }

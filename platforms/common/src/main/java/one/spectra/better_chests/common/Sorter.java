@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import com.google.inject.Inject;
 
 import one.spectra.better_chests.common.abstractions.ItemStack;
-import one.spectra.better_chests.common.inventory.Inventory;
 import one.spectra.better_chests.common.inventory.InventoryCreator;
+import one.spectra.better_chests.common.inventory.Inventory;
 import one.spectra.better_chests.common.inventory.fillers.InventoryFillerProvider;
 
 public class Sorter {

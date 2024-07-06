@@ -8,9 +8,11 @@ import com.google.inject.assistedinject.AssistedInject;
 import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.item.Items;
+import net.minecraft.screen.ShulkerBoxScreenHandler;
 import one.spectra.better_chests.common.inventory.Inventory;
 import one.spectra.better_chests.common.Configuration;
 import one.spectra.better_chests.common.abstractions.ItemStack;
@@ -19,9 +21,9 @@ import one.spectra.better_chests.abstractions.SpectraItemStack;
 import java.util.Arrays;
 
 public class SpectraInventory implements Inventory {
-    private net.minecraft.inventory.Inventory _inventory;
-    private int _skipSlots;
-    private int _size;
+    protected net.minecraft.inventory.Inventory _inventory;
+    protected int _skipSlots;
+    protected int _size;
 
     @AssistedInject
     public SpectraInventory(@Assisted net.minecraft.entity.player.PlayerInventory playerInventory) {
@@ -31,6 +33,22 @@ public class SpectraInventory implements Inventory {
     @AssistedInject
     public SpectraInventory(@Assisted net.minecraft.inventory.Inventory inventory) {
         this(inventory, 0, inventory.size());
+    }
+
+    @AssistedInject
+    public SpectraInventory(@Assisted ShulkerBoxScreenHandler shulkerBoxScreenHandler) {
+        this(null, 0, 27);
+        try {
+            var allFields = ShulkerBoxScreenHandler.class.getDeclaredFields();
+            var inventory = Arrays.stream(allFields)
+                    .filter(x -> x.getType() == net.minecraft.inventory.Inventory.class).findFirst();
+            if (inventory.isPresent()) {
+                inventory.get().setAccessible(true);
+                _inventory = (net.minecraft.inventory.Inventory) inventory.get().get(shulkerBoxScreenHandler);
+            }
+        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException e) {
+        }
     }
 
     private SpectraInventory(@Assisted net.minecraft.inventory.Inventory inventory, int skipSlots, int size) {
@@ -46,6 +64,7 @@ public class SpectraInventory implements Inventory {
 
         var blockEntity = getBlockEntity();
         if (blockEntity != null && blockEntity instanceof ConfigurationBlockEntity) {
+
             return (ConfigurationBlockEntity) blockEntity;
         }
         return null;
@@ -63,11 +82,16 @@ public class SpectraInventory implements Inventory {
         if (_inventory instanceof BarrelBlockEntity)
             return (BarrelBlockEntity) _inventory;
 
+        if (_inventory instanceof ShulkerBoxBlockEntity) {
+            return (ShulkerBoxBlockEntity) _inventory;
+        }
+
         return null;
     }
 
     /**
      * Retrieves the first block entity of a double chest.
+     * 
      * @param container a double inventory
      * @return The block entity of the first chest
      */
@@ -92,10 +116,6 @@ public class SpectraInventory implements Inventory {
 
     public void putInSlot(int slot, ItemStack stack) {
         _inventory.setStack(slot + _skipSlots, (net.minecraft.item.ItemStack) stack.getItemStack());
-    }
-
-    public void add(ItemStack stack) {
-        addItem((net.minecraft.item.ItemStack) stack.getItemStack());
     }
 
     public void clear() {
@@ -137,77 +157,6 @@ public class SpectraInventory implements Inventory {
     public void configure(Configuration configuration) {
         var blockEntity = getConfigurationBlockEntity();
         blockEntity.setConfiguration(configuration);
-    }
-
-    private List<net.minecraft.item.ItemStack> addItem(net.minecraft.item.ItemStack[] itemStacks) {
-        var stacksLeft = new ArrayList<net.minecraft.item.ItemStack>();
-        for (var i = 0; i < itemStacks.length; i++) {
-            var currentItemStack = itemStacks[i];
-            var stackLeft = addItem(currentItemStack);
-            if (stackLeft != null && stackLeft.getCount() != 0) {
-                stacksLeft.add(stackLeft);
-            }
-        }
-        return stacksLeft;
-    }
-
-    private net.minecraft.item.ItemStack addItem(net.minecraft.item.ItemStack itemStack) {
-        var indexesOfNonFullStacks = getIndexesOfNonFullStacks(itemStack);
-        var amountLeft = itemStack.getCount();
-        var i = 0;
-
-        while (amountLeft > 0 && i < indexesOfNonFullStacks.length) {
-            var containerStack = _inventory.getStack(indexesOfNonFullStacks[i]);
-            var ableToAdd = containerStack.getMaxCount() - containerStack.getCount();
-            if (ableToAdd > amountLeft) {
-                containerStack.increment(amountLeft);
-                itemStack.decrement(amountLeft);
-                amountLeft = 0;
-            } else {
-                containerStack.increment(ableToAdd);
-                itemStack.decrement(ableToAdd);
-                amountLeft -= ableToAdd;
-            }
-            i++;
-        }
-
-        if (amountLeft > 0) {
-            var firstEmptyIndex = getFirstEmptyIndex();
-            if (firstEmptyIndex >= 0) {
-                _inventory.setStack(firstEmptyIndex, itemStack);
-                amountLeft = 0;
-            }
-        }
-
-        return itemStack.getCount() > 0 ? itemStack : null;
-    }
-
-    private int[] getIndexesOfNonFullStacks(net.minecraft.item.ItemStack stack) {
-        var indexes = new ArrayList<Integer>();
-        for (var i = _skipSlots; i < _size + _skipSlots; i++) {
-            var itemStackFromInventory = _inventory.getStack(i);
-            if (net.minecraft.item.ItemStack.areItemsAndComponentsEqual(stack, itemStackFromInventory)
-                    && itemStackFromInventory.getCount() < itemStackFromInventory.getMaxCount()) {
-                indexes.add(i);
-            }
-        }
-        return indexes.stream().mapToInt(i -> i).toArray();
-    }
-
-    private int getFirstEmptyIndex() {
-        for (var i = _skipSlots; i < _size + _skipSlots; i++) {
-            var itemStackFromInventory = _inventory.getStack(i);
-            if (itemStackFromInventory.isEmpty())
-                return i;
-        }
-        return -1;
-    }
-
-    @Override
-    public List<ItemStack> add(List<ItemStack> stacks) {
-        var stacksToAdd = stacks.stream().map(x -> x.getItemStack()).toList()
-                .toArray(new net.minecraft.item.ItemStack[0]);
-        var restStacks = addItem(stacksToAdd);
-        return restStacks.stream().map(x -> new SpectraItemStack(x)).map(x -> (ItemStack) x).toList();
+        var e = (BlockEntity) blockEntity;
     }
 }
