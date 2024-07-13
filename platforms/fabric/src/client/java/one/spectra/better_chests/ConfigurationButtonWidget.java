@@ -14,18 +14,21 @@ public class ConfigurationButtonWidget extends TexturedButtonWidget {
     private static final Identifier focused = Identifier.of("better_chests", "configuration-button-focused");
     private static final Identifier unfocused = Identifier.of("better_chests", "configuration-button-unfocused");
 
+    private Runnable onPressHandler;
+
     private Screen parent;
     private MinecraftClient client;
 
-    public ConfigurationButtonWidget(int x, int y, Screen parent, MinecraftClient client) {
+    public ConfigurationButtonWidget(int x, int y, Screen parent, MinecraftClient client, Runnable onPress) {
         super(x, y, 16, 16, new ButtonTextures(unfocused, focused), null, Text.literal(""));
 
         this.client = client;
         this.parent = parent;
+        this.onPressHandler = onPress;
     }
 
     @Override
     public void onPress() {
-        client.setScreen(new ContainerConfigurationScreen(parent));
+        onPressHandler.run();
     }
 }

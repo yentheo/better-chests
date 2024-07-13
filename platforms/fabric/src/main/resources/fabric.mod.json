@@ -21,6 +21,9 @@
 		],
 		"client": [
 			"one.spectra.better_chests.BetterChestsClient"
+		],
+		"modmenu": [
+			"one.spectra.better_chests.configuration.FabricModMenuIntegration"
 		]
 	},
 	"mixins": [

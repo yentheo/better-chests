@@ -9,7 +9,7 @@ import one.spectra.better_chests.communications.handlers.SortRequestHandler;
 import one.spectra.better_chests.communications.requests.ConfigureChestRequest;
 import one.spectra.better_chests.communications.requests.GetConfigurationRequest;
 import one.spectra.better_chests.communications.requests.SortRequest;
-import one.spectra.better_chests.communications.responses.GetConfigurationResponse;
+import one.spectra.better_chests.communications.responses.GetContainerConfigurationResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,15 +29,18 @@ public class BetterChests implements ModInitializer {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
-		LOGGER.info("Initializing Better Chests!");		
-        INJECTOR = Guice.createInjector(new BetterChestsModule(PayloadTypeRegistry.playC2S(), PayloadTypeRegistry.playS2C()));
+		LOGGER.info("Initializing Better Chests!");
+		INJECTOR = Guice
+				.createInjector(new BetterChestsModule(PayloadTypeRegistry.playC2S(), PayloadTypeRegistry.playS2C()));
 
 		var messageRegistrar = INJECTOR.getInstance(MessageRegistrar.class);
 		messageRegistrar
-		.registerPlayToServer(SortRequest.ID, SortRequest.CODEC, SortRequestHandler.class)
-		.registerPlayToServer(GetConfigurationRequest.ID, GetConfigurationRequest.CODEC, GetConfigurationHandler.class)
-		.registerPlayToServer(ConfigureChestRequest.ID, ConfigureChestRequest.CODEC, ConfigureChestHandler.class)
-		.registerPlayFromServer(GetConfigurationResponse.ID, GetConfigurationResponse.CODEC);
+				.registerPlayToServer(SortRequest.ID, SortRequest.CODEC, SortRequestHandler.class)
+				.registerPlayToServer(GetConfigurationRequest.ID, GetConfigurationRequest.CODEC,
+						GetConfigurationHandler.class)
+				.registerPlayToServer(ConfigureChestRequest.ID, ConfigureChestRequest.CODEC,
+						ConfigureChestHandler.class)
+				.registerPlayFromServer(GetContainerConfigurationResponse.ID, GetContainerConfigurationResponse.CODEC);
 
 	}
 }

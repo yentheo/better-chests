@@ -1,8 +1,8 @@
 package one.spectra.better_chests;
 
-import one.spectra.better_chests.common.Configuration;
+import one.spectra.better_chests.common.configuration.ContainerConfiguration;
 
 public interface ConfigurationBlockEntity {
-    void setConfiguration(Configuration configuration);
-    Configuration getConfiguration();
+    void setConfiguration(ContainerConfiguration configuration);
+    ContainerConfiguration getConfiguration();
 }

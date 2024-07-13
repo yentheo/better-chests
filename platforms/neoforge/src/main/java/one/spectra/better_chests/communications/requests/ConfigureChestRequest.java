@@ -15,6 +15,8 @@ public record ConfigureChestRequest(boolean spread, boolean sortOnClose) impleme
             ByteBufCodecs.BOOL, ConfigureChestRequest::sortOnClose,
             ConfigureChestRequest::new);
 
+    
+
     @Override
     public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
         return TYPE;

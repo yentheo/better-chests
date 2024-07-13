@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.Context;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.PlayPayloadHandler;
 import one.spectra.better_chests.abstractions.PlayerFactory;
-import one.spectra.better_chests.common.Configuration;
 import one.spectra.better_chests.communications.requests.ConfigureChestRequest;
 
 public class ConfigureChestHandler implements PlayPayloadHandler<ConfigureChestRequest> {
@@ -21,7 +20,7 @@ public class ConfigureChestHandler implements PlayPayloadHandler<ConfigureChestR
     public void receive(ConfigureChestRequest payload, Context context) {
         var player = playerFactory.createPlayer(context.player());
         var container = player.getOpenContainer();
-        container.configure(new Configuration(payload.spread(), payload.sortOnClose()));
+        container.configure(payload.containerConfiguration());
     }
     
 }

@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.Context;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.PlayPayloadHandler;
 import one.spectra.better_chests.abstractions.PlayerFactory;
 import one.spectra.better_chests.communications.requests.GetConfigurationRequest;
-import one.spectra.better_chests.communications.responses.GetConfigurationResponse;
+import one.spectra.better_chests.communications.responses.GetContainerConfigurationResponse;
 
 public class GetConfigurationHandler implements PlayPayloadHandler<GetConfigurationRequest> {
 
@@ -23,7 +23,7 @@ public class GetConfigurationHandler implements PlayPayloadHandler<GetConfigurat
         var player = playerFactory.createPlayer(context.player());
         var container = player.getOpenContainer();
         var configuration = container.getConfiguration();
-        ServerPlayNetworking.send(context.player(), new GetConfigurationResponse(configuration.spread(), configuration.sortOnClose()));
+        ServerPlayNetworking.send(context.player(), new GetContainerConfigurationResponse(configuration));
     }
     
 }

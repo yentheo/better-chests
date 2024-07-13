@@ -1,5 +1,8 @@
-package one.spectra.better_chests.communications.requests;
+package one.spectra.better_chests.communications.responses;
 
+import java.util.Optional;
+
+import io.netty.handler.codec.MessageToByteEncoder;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -10,13 +13,14 @@ import net.minecraft.util.Identifier;
 import one.spectra.better_chests.common.configuration.ContainerConfiguration;
 import one.spectra.better_chests.common.configuration.SortingConfiguration;
 
-public record ConfigureChestRequest(ContainerConfiguration containerConfiguration) implements CustomPayload {
-    public static final CustomPayload.Id<ConfigureChestRequest> ID = new CustomPayload.Id<ConfigureChestRequest>(
-            Identifier.of("better-chest", "configure-chest"));
-    public static final PacketCodec<RegistryByteBuf, ConfigureChestRequest> CODEC = PacketCodec
-            .of(ConfigureChestRequest::write, ConfigureChestRequest::new);
+public record GetContainerConfigurationResponse(ContainerConfiguration containerConfiguration)
+        implements CustomPayload {
+    public static final CustomPayload.Id<GetContainerConfigurationResponse> ID = new CustomPayload.Id<GetContainerConfigurationResponse>(
+            Identifier.of("better-chest", "get-configuration-response"));
+    public static final PacketCodec<RegistryByteBuf, GetContainerConfigurationResponse> CODEC = PacketCodec
+            .of(GetContainerConfigurationResponse::write, GetContainerConfigurationResponse::new);
 
-    public ConfigureChestRequest(RegistryByteBuf buf) {
+    public GetContainerConfigurationResponse(RegistryByteBuf buf) {
         this(readFromBuf(buf));
     }
 

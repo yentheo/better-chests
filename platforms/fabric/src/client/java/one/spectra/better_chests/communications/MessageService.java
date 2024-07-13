@@ -1,6 +1,8 @@
 package one.spectra.better_chests.communications;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
@@ -19,13 +21,13 @@ public class MessageService {
 
     public <TRequest extends CustomPayload, TResponse extends CustomPayload> Future<TResponse> requestFromServer(TRequest request, Class<TResponse> clazz) {
         var completableFuture = new CompletableFuture<TResponse>();
-
-        Executors.newCachedThreadPool().submit(() -> {
+        var executor = Executors.newCachedThreadPool();
+        executor.submit(() -> {
             this.messageRegistrar.registerOnce(r -> {
                 completableFuture.complete(r);
             }, clazz);
+            ClientPlayNetworking.send(request);
         });
-        ClientPlayNetworking.send(request);
 
         return completableFuture;
     }

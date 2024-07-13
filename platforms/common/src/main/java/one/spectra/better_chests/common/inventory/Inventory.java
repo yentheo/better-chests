@@ -2,8 +2,8 @@ package one.spectra.better_chests.common.inventory;
 
 import java.util.List;
 
-import one.spectra.better_chests.common.Configuration;
 import one.spectra.better_chests.common.abstractions.ItemStack;
+import one.spectra.better_chests.common.configuration.ContainerConfiguration;
 
 public interface Inventory {
     void clear();
@@ -12,6 +12,6 @@ public interface Inventory {
     int getRows();
     int getColumns();
     void putInSlot(int slot, ItemStack stack);
-    Configuration getConfiguration();
-    void configure(Configuration configuration);
+    ContainerConfiguration getConfiguration();
+    void configure(ContainerConfiguration configuration);
 }

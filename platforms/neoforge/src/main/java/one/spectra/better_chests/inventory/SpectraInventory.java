@@ -11,8 +11,8 @@ import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import one.spectra.better_chests.common.inventory.Inventory;
-import one.spectra.better_chests.common.Configuration;
 import one.spectra.better_chests.common.abstractions.ItemStack;
+import one.spectra.better_chests.common.configuration.GlobalConfiguration;
 import one.spectra.better_chests.abstractions.SpectraItemStack;
 
 public class SpectraInventory implements Inventory {
@@ -72,18 +72,18 @@ public class SpectraInventory implements Inventory {
         return 9;
     }
 
-    public Configuration getConfiguration() {
+    public GlobalConfiguration getConfiguration() {
         var blockEntity = getBlockEntity();
         if (blockEntity != null) {
             var persistantData = blockEntity.getPersistentData();
             var spread = getBooleanSafe(persistantData, "better_chests:spread", true);
             var sortOnClose = getBooleanSafe(persistantData, "better_chests:sortOnClose", false);
-            return new Configuration(spread, sortOnClose);
+            return new GlobalConfiguration(spread, sortOnClose);
         }
-        return new Configuration(false, false);
+        return new GlobalConfiguration(false, false);
     }
 
-    public void configure(Configuration configuration) {
+    public void configure(GlobalConfiguration configuration) {
         var blockEntity = getBlockEntity();
         if (blockEntity != null) {
             var persistentData = blockEntity.getPersistentData();

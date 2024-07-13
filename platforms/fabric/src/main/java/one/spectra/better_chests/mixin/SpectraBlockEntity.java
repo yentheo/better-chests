@@ -1,5 +1,7 @@
 package one.spectra.better_chests.mixin;
 
+import java.util.Optional;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -13,51 +15,55 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.util.math.BlockPos;
 import one.spectra.better_chests.ConfigurationBlockEntity;
-import one.spectra.better_chests.common.Configuration;
-
+import one.spectra.better_chests.common.configuration.ContainerConfiguration;
+import one.spectra.better_chests.common.configuration.GlobalConfiguration;
+import one.spectra.better_chests.common.configuration.SortingConfiguration;
 
 @Mixin(LockableContainerBlockEntity.class)
 public class SpectraBlockEntity extends BlockEntity implements ConfigurationBlockEntity {
 
-    private boolean spread;
-    private boolean sortOnClose;
+    private Optional<Boolean> spread;
+    private Optional<Boolean> sortOnClose;
 
     public SpectraBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-	@Inject(method = "readNbt", at = @At("HEAD"))
-	private void blockentity$read(NbtCompound nbt, WrapperLookup wrapperLookup, CallbackInfo callbackinfo) {
-        this.spread = getBoolean(nbt, "better_chests:spread", true);
-        this.sortOnClose = getBoolean(nbt, "better_chests:sortOnClose", false);
-	}
-
-    private boolean getBoolean(NbtCompound nbt, String key, boolean defaultValue) {
-        return nbt.contains(key) ? nbt.getBoolean(key) : defaultValue;
+    @Inject(method = "readNbt", at = @At("HEAD"))
+    private void blockentity$read(NbtCompound nbt, WrapperLookup wrapperLookup, CallbackInfo callbackinfo) {
+        this.spread = getBoolean(nbt, "better_chests:spread");
+        this.sortOnClose = getBoolean(nbt, "better_chests:sortOnClose");
     }
 
-	@Inject(method = "writeNbt", at = @At("HEAD"))
-	private void blockentity$write(NbtCompound nbt, WrapperLookup wrapperLookup, CallbackInfo callbackinfo) {
+    private Optional<Boolean> getBoolean(NbtCompound nbt, String key) {
+        return nbt.contains(key) ? Optional.of(nbt.getBoolean(key)) : Optional.empty();
+    }
+
+    @Inject(method = "writeNbt", at = @At("HEAD"))
+    private void blockentity$write(NbtCompound nbt, WrapperLookup wrapperLookup, CallbackInfo callbackinfo) {
         putBoolean(nbt, "better_chests:spread", spread);
         putBoolean(nbt, "better_chests:sortOnClose", sortOnClose);
-	}
+    }
 
-    private void putBoolean(NbtCompound nbt, String key, boolean value) {
-        if (!nbt.contains(key) || nbt.getBoolean(key) != value) {
-            nbt.putBoolean(key, value);
+    private void putBoolean(NbtCompound nbt, String key, Optional<Boolean> value) {
+        if (value == null && nbt.contains(key) || !value.isPresent()) {
+            nbt.remove(key);
+        } else if (!nbt.contains(key) && value.isPresent() || nbt.getBoolean(key) != value.get()) {
+            nbt.putBoolean(key, value.get());
         }
     }
 
     @Override
-    public void setConfiguration(Configuration configuration) {
-        this.spread = configuration.spread();
-        this.sortOnClose = configuration.sortOnClose();
+    public void setConfiguration(ContainerConfiguration configuration) {
+        this.spread = configuration.sorting().spread();
+        this.sortOnClose = configuration.sorting().sortOnClose();
         this.markDirty();
     }
 
     @Override
-    public Configuration getConfiguration() {
-        return new Configuration(spread, sortOnClose);
+    public ContainerConfiguration getConfiguration() {
+        var sortingConfiguration = new SortingConfiguration(this.spread, this.sortOnClose);
+        return new ContainerConfiguration(sortingConfiguration);
     }
-    
+
 }

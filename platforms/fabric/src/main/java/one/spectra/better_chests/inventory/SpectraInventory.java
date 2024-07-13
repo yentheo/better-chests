@@ -13,11 +13,14 @@ import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.item.Items;
 import net.minecraft.screen.ShulkerBoxScreenHandler;
 import one.spectra.better_chests.common.inventory.Inventory;
-import one.spectra.better_chests.common.Configuration;
 import one.spectra.better_chests.common.abstractions.ItemStack;
+import one.spectra.better_chests.common.configuration.ContainerConfiguration;
+import one.spectra.better_chests.common.configuration.GlobalConfiguration;
+import one.spectra.better_chests.common.configuration.SortingConfiguration;
 import one.spectra.better_chests.ConfigurationBlockEntity;
 import one.spectra.better_chests.abstractions.SpectraItemStack;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class SpectraInventory implements Inventory {
     protected net.minecraft.inventory.Inventory _inventory;
@@ -145,15 +148,15 @@ public class SpectraInventory implements Inventory {
         return 9;
     }
 
-    public Configuration getConfiguration() {
+    public ContainerConfiguration getConfiguration() {
         var blockEntity = getConfigurationBlockEntity();
         if (blockEntity == null)
-            return new Configuration(false, false);
+            return new ContainerConfiguration(new SortingConfiguration(Optional.empty(), Optional.empty()));
 
         return blockEntity.getConfiguration();
     }
 
-    public void configure(Configuration configuration) {
+    public void configure(ContainerConfiguration configuration) {
         var blockEntity = getConfigurationBlockEntity();
         blockEntity.setConfiguration(configuration);
     }

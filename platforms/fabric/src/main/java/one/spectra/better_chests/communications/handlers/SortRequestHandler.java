@@ -23,7 +23,7 @@ public class SortRequestHandler implements PlayPayloadHandler<SortRequest> {
     public void receive(SortRequest payload, Context context) {
         var player = playerFactory.createPlayer(context.player());
         var inventoryToSort = payload.sortPlayerInventory() ? player.getInventory() : player.getOpenContainer();
-        sorter.sort(inventoryToSort, true, false);
+        sorter.sort(inventoryToSort, payload.spread());
     }
 
 }
