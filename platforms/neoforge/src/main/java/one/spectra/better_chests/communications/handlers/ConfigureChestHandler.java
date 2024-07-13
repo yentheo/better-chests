@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import one.spectra.better_chests.abstractions.PlayerFactory;
-import one.spectra.better_chests.common.configuration.GlobalConfiguration;
 import one.spectra.better_chests.communications.requests.ConfigureChestRequest;
 
 public class ConfigureChestHandler implements IPayloadHandler<ConfigureChestRequest> {
@@ -21,7 +20,7 @@ public class ConfigureChestHandler implements IPayloadHandler<ConfigureChestRequ
     public void handle(ConfigureChestRequest payload, IPayloadContext context) {
         var player = playerFactory.createPlayer(context.player());
         var openContainer = player.getOpenContainer();
-        openContainer.configure(new GlobalConfiguration(payload.spread(), payload.sortOnClose()));
+        openContainer.configure(payload.containerConfiguration());
     }
     
 }

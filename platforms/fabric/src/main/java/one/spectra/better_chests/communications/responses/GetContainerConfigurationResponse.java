@@ -1,8 +1,5 @@
 package one.spectra.better_chests.communications.responses;
 
-import java.util.Optional;
-
-import io.netty.handler.codec.MessageToByteEncoder;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;

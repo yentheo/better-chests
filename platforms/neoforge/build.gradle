@@ -21,6 +21,7 @@ group = mod_group_id
 repositories {
     mavenLocal()
 	mavenCentral()
+    maven { url "https://maven.shedaniel.me/" }
 }
 
 base {
@@ -112,6 +113,7 @@ dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
     implementation 'com.google.inject:guice:7.0.0'
     implementation 'com.google.inject.extensions:guice-assistedinject:7.0.0'
+    api "me.shedaniel.cloth:cloth-config-neoforge:15.0.127"
     jarJar ( group: 'com.google.inject', name: 'guice', version: '7.0.0') { }
     jarJar ( group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '7.0.0') { }
     jarJar 'jakarta.inject:jakarta.inject-api:[2.0.1]'

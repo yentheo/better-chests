@@ -2,6 +2,8 @@ package one.spectra.better_chests.inventory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
+
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 
@@ -12,7 +14,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import one.spectra.better_chests.common.inventory.Inventory;
 import one.spectra.better_chests.common.abstractions.ItemStack;
+import one.spectra.better_chests.common.configuration.ContainerConfiguration;
 import one.spectra.better_chests.common.configuration.GlobalConfiguration;
+import one.spectra.better_chests.common.configuration.SortingConfiguration;
 import one.spectra.better_chests.abstractions.SpectraItemStack;
 
 public class SpectraInventory implements Inventory {
@@ -72,28 +76,31 @@ public class SpectraInventory implements Inventory {
         return 9;
     }
 
-    public GlobalConfiguration getConfiguration() {
+    public ContainerConfiguration getConfiguration() {
         var blockEntity = getBlockEntity();
         if (blockEntity != null) {
             var persistantData = blockEntity.getPersistentData();
-            var spread = getBooleanSafe(persistantData, "better_chests:spread", true);
-            var sortOnClose = getBooleanSafe(persistantData, "better_chests:sortOnClose", false);
-            return new GlobalConfiguration(spread, sortOnClose);
+            var spread = getBooleanSafe(persistantData, "better_chests:spread");
+            var sortOnClose = getBooleanSafe(persistantData, "better_chests:sortOnClose");
+            var sortingConfiguration = new SortingConfiguration(spread, sortOnClose);
+            return new ContainerConfiguration(sortingConfiguration);
         }
-        return new GlobalConfiguration(false, false);
+        return new ContainerConfiguration(new SortingConfiguration(Optional.empty(), Optional.empty()));
     }
 
-    public void configure(GlobalConfiguration configuration) {
+    public void configure(ContainerConfiguration configuration) {
         var blockEntity = getBlockEntity();
         if (blockEntity != null) {
             var persistentData = blockEntity.getPersistentData();
-            persistentData.putBoolean("better_chests:spread", configuration.spread());
-            persistentData.putBoolean("better_chests:sortOnClose", configuration.sortOnClose());
+            if (configuration.sorting().spread().isPresent())
+                persistentData.putBoolean("better_chests:spread", configuration.sorting().spread().get());
+            if (configuration.sorting().sortOnClose().isPresent())
+                persistentData.putBoolean("better_chests:sortOnClose", configuration.sorting().sortOnClose().get());
         }
     }
 
-    private boolean getBooleanSafe(CompoundTag data, String key, boolean defaultValue) {
-        return data.contains(key) ? data.getBoolean(key) : defaultValue;
+    private Optional<Boolean> getBooleanSafe(CompoundTag data, String key) {
+        return data.contains(key) ? Optional.of(data.getBoolean(key)) : Optional.empty();
     }
 
     private BlockEntity getBlockEntity() {

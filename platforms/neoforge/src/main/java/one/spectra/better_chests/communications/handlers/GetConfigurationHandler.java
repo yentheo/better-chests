@@ -25,7 +25,7 @@ public class GetConfigurationHandler implements IPayloadHandler<GetConfiguration
         var openContainer = player.getOpenContainer();
         if (context.player() instanceof ServerPlayer) {
             var configuration = openContainer.getConfiguration();
-            PacketDistributor.sendToPlayer((ServerPlayer)context.player(), new GetConfigurationResponse(configuration.spread(), configuration.sortOnClose()));
+            PacketDistributor.sendToPlayer((ServerPlayer)context.player(), new GetConfigurationResponse(configuration));
         }
     }
 
