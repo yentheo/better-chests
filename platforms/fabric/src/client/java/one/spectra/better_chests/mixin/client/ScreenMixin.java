@@ -113,30 +113,32 @@ public abstract class ScreenMixin extends Screen {
 		var containerConfigurationHolder = AutoConfig.getConfigHolder(FabricConfiguration.class);
 		var globalConfigurationHolder = AutoConfig.getConfigHolder(FabricGlobalConfiguration.class);
 		var globalConfiguration = globalConfigurationHolder.get();
-		var futureResponse = messageService.requestFromServer(GetConfigurationRequest.INSTANCE,
-				GetContainerConfigurationResponse.class);
+		this.globalConfiguration = configurationMapper.map(globalConfiguration);
+		if (globalConfiguration.showSortButton) {
+			addSortButtons();
+		}
+		if (globalConfiguration.showConfigurationButton) {
+			addConfigurationButton();
+		}
 
-		Executors.newCachedThreadPool().submit(() -> {
-			try {
-				var response = futureResponse.get();
-				this.globalConfiguration = configurationMapper.map(globalConfiguration);
-				this.containerConfiguration = response.containerConfiguration();
-				var configuration = configurationMapper.map(globalConfiguration, this.containerConfiguration);
-				containerConfigurationHolder.setConfig(configuration);
+		if (currentScreenHelper.isGenericContainerScreen()) {
+			var futureResponse = messageService.requestFromServer(GetConfigurationRequest.INSTANCE,
+					GetContainerConfigurationResponse.class);
+			Executors.newCachedThreadPool().submit(() -> {
+				try {
+					var response = futureResponse.get();
+					this.containerConfiguration = response.containerConfiguration();
+					var configuration = configurationMapper.map(globalConfiguration, this.containerConfiguration);
+					containerConfigurationHolder.setConfig(configuration);
 
-				MinecraftClient.getInstance().submit(() -> {
-					if (globalConfiguration.showSortButton) {
-						addSortButtons();
-					}
-					if (globalConfiguration.showConfigurationButton) {
-						addConfigurationButton();
-					}
-				});
-			} catch (InterruptedException | ExecutionException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-			}
-		});
+					MinecraftClient.getInstance().submit(() -> {
+					});
+				} catch (InterruptedException | ExecutionException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
+				}
+			});
+		}
 
 	}
 
