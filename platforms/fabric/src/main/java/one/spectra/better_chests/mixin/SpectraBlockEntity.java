@@ -46,9 +46,12 @@ public class SpectraBlockEntity extends BlockEntity implements ConfigurationBloc
     }
 
     private void putBoolean(NbtCompound nbt, String key, Optional<Boolean> value) {
-        if (value == null && nbt.contains(key) || !value.isPresent()) {
+        var valuePresent = value != null && value.isPresent();
+        if (!valuePresent && nbt.contains(key)) {
             nbt.remove(key);
-        } else if (!nbt.contains(key) && value.isPresent() || nbt.getBoolean(key) != value.get()) {
+        }
+
+        if (valuePresent && (!nbt.contains(key) || nbt.getBoolean(key) != value.get())) {
             nbt.putBoolean(key, value.get());
         }
     }

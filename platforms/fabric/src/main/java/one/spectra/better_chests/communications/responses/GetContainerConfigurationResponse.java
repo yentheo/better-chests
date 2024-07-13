@@ -1,5 +1,7 @@
 package one.spectra.better_chests.communications.responses;
 
+import java.util.Optional;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -40,8 +42,9 @@ public record GetContainerConfigurationResponse(ContainerConfiguration container
                 buf.writeBoolean(value);
             }
         };
-        buf.writeOptional(containerConfiguration.sorting().spread(), optionalBooleanEncoder);
-        buf.writeOptional(containerConfiguration.sorting().sortOnClose(), optionalBooleanEncoder);
+        var sorting = containerConfiguration.sorting();
+        buf.writeOptional(sorting.spread() != null ? sorting.spread() : Optional.empty() , optionalBooleanEncoder);
+        buf.writeOptional(sorting.sortOnClose() != null ? sorting.sortOnClose() : Optional.empty(), optionalBooleanEncoder);
     }
 
     @Override

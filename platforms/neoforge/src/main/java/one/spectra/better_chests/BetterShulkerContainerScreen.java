@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
 import me.shedaniel.autoconfig.AutoConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -19,6 +20,7 @@ import one.spectra.better_chests.communications.requests.GetConfigurationRequest
 import one.spectra.better_chests.communications.requests.SortRequest;
 import one.spectra.better_chests.communications.responses.GetConfigurationResponse;
 import one.spectra.better_chests.configuration.ConfigurationMapper;
+import one.spectra.better_chests.configuration.FabricConfiguration;
 import one.spectra.better_chests.configuration.FabricGlobalConfiguration;
 
 public class BetterShulkerContainerScreen extends ShulkerBoxScreen {
@@ -37,17 +39,7 @@ public class BetterShulkerContainerScreen extends ShulkerBoxScreen {
 
         globalConfiguration = configurationMapper.map(globalConfigurationHolder.get());
 
-        var messageService = BetterChestsMod.NETWORK_INJECTOR.getInstance(MessageService.class);
-        var futureResponse = messageService.requestFromServer(new GetConfigurationRequest(),
-                GetConfigurationResponse.class);
-        Executors.newCachedThreadPool().submit(() -> {
-            try {
-                var response = futureResponse.get();
-                sortOnClose = globalConfiguration.sorting().sortOnClose().get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        });
+        sortOnClose = globalConfiguration.sorting().sortOnClose().get();
     }
 
     @Override
@@ -74,6 +66,20 @@ public class BetterShulkerContainerScreen extends ShulkerBoxScreen {
                                 .sendToServer(new SortRequest(true, globalConfiguration.sorting().spread().get()));
                     });
             this.addRenderableWidget(sortInventoryButton);
+        }
+        if (globalConfiguration.showConfigurationButton()) {
+            var configurationButtonFocusedImage = ResourceLocation.fromNamespaceAndPath("better_chests",
+                    "configuration-button-unfocused");
+            var configurationButtonUnfocusedImage = ResourceLocation.fromNamespaceAndPath("better_chests",
+                    "configuration-button-focused");
+            var configurationSprite = new WidgetSprites(configurationButtonFocusedImage,
+                    configurationButtonUnfocusedImage);
+            var configurationButton = new ImageButton(this.leftPos + this.imageWidth + 1, this.topPos + 1, 16, 16,
+                    configurationSprite, e -> {
+                        Minecraft.getInstance()
+                                .setScreen(AutoConfig.getConfigScreen(FabricGlobalConfiguration.class, this).get());
+                    });
+            this.addRenderableWidget(configurationButton);
         }
     }
 

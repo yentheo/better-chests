@@ -107,50 +107,48 @@ public abstract class ScreenMixin extends Screen {
 			return;
 		}
 
-		if (currentScreenHelper.isGenericContainerScreen()) {
-			var messageService = BetterChestsClient.INJECTOR.getInstance(MessageService.class);
-			var configurationMapper = BetterChestsClient.INJECTOR.getInstance(ConfigurationMapper.class);
+		var messageService = BetterChestsClient.INJECTOR.getInstance(MessageService.class);
+		var configurationMapper = BetterChestsClient.INJECTOR.getInstance(ConfigurationMapper.class);
 
-			var containerConfigurationHolder = AutoConfig.getConfigHolder(FabricConfiguration.class);
-			var globalConfigurationHolder = AutoConfig.getConfigHolder(FabricGlobalConfiguration.class);
-			var globalConfiguration = globalConfigurationHolder.get();
-			var futureResponse = messageService.requestFromServer(GetConfigurationRequest.INSTANCE,
-					GetContainerConfigurationResponse.class);
+		var containerConfigurationHolder = AutoConfig.getConfigHolder(FabricConfiguration.class);
+		var globalConfigurationHolder = AutoConfig.getConfigHolder(FabricGlobalConfiguration.class);
+		var globalConfiguration = globalConfigurationHolder.get();
+		var futureResponse = messageService.requestFromServer(GetConfigurationRequest.INSTANCE,
+				GetContainerConfigurationResponse.class);
 
-			Executors.newCachedThreadPool().submit(() -> {
-				try {
-					var response = futureResponse.get();
-					this.globalConfiguration = configurationMapper.map(globalConfiguration);
-					this.containerConfiguration = response.containerConfiguration();
-					var configuration = configurationMapper.map(globalConfiguration, this.containerConfiguration);
-					containerConfigurationHolder.setConfig(configuration);
+		Executors.newCachedThreadPool().submit(() -> {
+			try {
+				var response = futureResponse.get();
+				this.globalConfiguration = configurationMapper.map(globalConfiguration);
+				this.containerConfiguration = response.containerConfiguration();
+				var configuration = configurationMapper.map(globalConfiguration, this.containerConfiguration);
+				containerConfigurationHolder.setConfig(configuration);
 
-					MinecraftClient.getInstance().submit(() -> {
-						if (globalConfiguration.showSortButton) {
-							addSortButtons();
-						}
-						if (globalConfiguration.showConfigurationButton) {
-							addConfigurationButton();
-						}
-					});
-				} catch (InterruptedException | ExecutionException e) {
-					e.printStackTrace();
-				} catch (Exception e) {
-				}
-			});
-		}
+				MinecraftClient.getInstance().submit(() -> {
+					if (globalConfiguration.showSortButton) {
+						addSortButtons();
+					}
+					if (globalConfiguration.showConfigurationButton) {
+						addConfigurationButton();
+					}
+				});
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+			}
+		});
 
 	}
 
 	private void addConfigurationButton() {
 		var x = this.x + this.backgroundWidth - 20;
-		if (!currentScreenHelper.isShulkerScreen()) {
-			configurationButton = new ConfigurationButtonWidget(x + 20, y + 1, this, client, () -> {
-				var configScreen = AutoConfig.getConfigScreen(FabricConfiguration.class, this).get();
-				client.setScreen(configScreen);
-			});
-			addDrawableChild(configurationButton);
-		}
+		configurationButton = new ConfigurationButtonWidget(x + 20, y + 1, this, client, () -> {
+			var configScreen = currentScreenHelper.isGenericContainerScreen()
+					? AutoConfig.getConfigScreen(FabricConfiguration.class, this).get()
+					: AutoConfig.getConfigScreen(FabricGlobalConfiguration.class, this).get();
+			client.setScreen(configScreen);
+		});
+		addDrawableChild(configurationButton);
 	}
 
 	private void addSortButtons() {
