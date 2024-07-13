@@ -17,6 +17,7 @@ import one.spectra.better_chests.common.abstractions.ItemStack;
 import one.spectra.better_chests.common.configuration.ContainerConfiguration;
 import one.spectra.better_chests.common.configuration.GlobalConfiguration;
 import one.spectra.better_chests.common.configuration.SortingConfiguration;
+import one.spectra.better_chests.BetterChestsMod;
 import one.spectra.better_chests.abstractions.SpectraItemStack;
 
 public class SpectraInventory implements Inventory {
@@ -94,8 +95,13 @@ public class SpectraInventory implements Inventory {
             var persistentData = blockEntity.getPersistentData();
             if (configuration.sorting().spread().isPresent())
                 persistentData.putBoolean("better_chests:spread", configuration.sorting().spread().get());
+            else
+                persistentData.remove("better_chests:spread");
             if (configuration.sorting().sortOnClose().isPresent())
                 persistentData.putBoolean("better_chests:sortOnClose", configuration.sorting().sortOnClose().get());
+            else
+                persistentData.remove("better_chests:sortOnClose");
+
         }
     }
 
