@@ -96,6 +96,12 @@ public abstract class ScreenMixin extends Screen {
 				inventoryButtonWidget.setX(x);
 			}
 		}
+		if (configurationButton != null) {
+			var x = this.x + this.backgroundWidth + 2;
+			if (x != configurationButton.getX()) {
+				configurationButton.setX(x);
+			}
+		}
 	}
 
 	private void initialize(CallbackInfo callbackinfo) {
@@ -143,8 +149,7 @@ public abstract class ScreenMixin extends Screen {
 	}
 
 	private void addConfigurationButton() {
-		var x = this.x + this.backgroundWidth - 20;
-		configurationButton = new ConfigurationButtonWidget(x + 20, y + 1, this, client, () -> {
+		configurationButton = new ConfigurationButtonWidget(this.x + this.backgroundWidth + 2, y + 1, this, client, () -> {
 			var configScreen = currentScreenHelper.isGenericContainerScreen()
 					? AutoConfig.getConfigScreen(FabricConfiguration.class, this).get()
 					: AutoConfig.getConfigScreen(FabricGlobalConfiguration.class, this).get();
