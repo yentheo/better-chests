@@ -49,7 +49,8 @@ public class BetterInventoryScreen extends InventoryScreen {
             var positionX = this.leftPos + this.imageWidth - 20;
             var positionY = this.topPos + 72;
 
-            if (this._sortButton != null)
+            if (this._sortButton != null
+                    && (this._sortButton.getX() != positionX || this._sortButton.getY() != positionY))
                 this._sortButton.setPosition(positionX, positionY);
         }
         super.render(p_282060_, p_282533_, p_281661_, p_281873_);
