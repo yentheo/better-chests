@@ -48,9 +48,6 @@ public class BetterInventoryScreen extends InventoryScreen {
         if (this._sortButton != null) {
             var positionX = this.leftPos + this.imageWidth - 20;
             var positionY = this.topPos + 72;
-            if (this.getRecipeBookComponent().isActive()) {
-                positionX = this.leftPos + imageWidth - 20;
-            }
 
             if (this._sortButton != null)
                 this._sortButton.setPosition(positionX, positionY);
