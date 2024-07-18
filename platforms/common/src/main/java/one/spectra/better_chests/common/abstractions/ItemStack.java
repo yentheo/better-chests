@@ -5,4 +5,5 @@ public interface ItemStack {
     String getMaterialKey();    
     Object getItemStack();
     ItemStack takeOne();
+    int getDurability();
 }

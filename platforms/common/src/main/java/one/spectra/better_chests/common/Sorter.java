@@ -32,21 +32,28 @@ public class Sorter {
 
         var mergedStacks = tempInventory.getItemStacks();
 
+        // inventory comparators
         Comparator<Entry<String, List<ItemStack>>> groupStackAmountComparator = Comparator
                 .comparing(entry -> entry.getValue().size(), Comparator.reverseOrder());
         Comparator<Entry<String, List<ItemStack>>> groupItemAmountComparator = Comparator.comparing(
                 entry -> entry.getValue().stream().mapToInt(l -> l.getAmount()).sum(), Comparator.reverseOrder());
         Comparator<Entry<String, List<ItemStack>>> groupNameComparator = Comparator.comparing(entry -> entry.getKey());
 
+        // group comparators
+        Comparator<ItemStack> amountComparator = Comparator.comparing(stack -> stack.getAmount(), Comparator.reverseOrder());
+        Comparator<ItemStack> durabilityComparator = Comparator.comparing(entry -> entry.getDurability());
+
+        var groupSorter = amountComparator.thenComparing(durabilityComparator);
+
         var sortAlphabetically = false;
 
-        var materialSorter = sortAlphabetically ? groupNameComparator
+        var inventorySorter = sortAlphabetically ? groupNameComparator
                 : groupStackAmountComparator.thenComparing(groupItemAmountComparator)
                         .thenComparing(groupNameComparator);
         var groupedStacks = mergedStacks.stream().collect(Collectors.groupingBy(ItemStack::getMaterialKey)).entrySet()
-                .stream().sorted(materialSorter)
+                .stream().sorted(inventorySorter)
                 .map(x -> x.getValue().stream()
-                        .sorted(Comparator.comparing(stack -> stack.getAmount(), Comparator.reverseOrder())).toList()
+                        .sorted(groupSorter).toList()
                         .stream().toList())
                 .toList();
 
