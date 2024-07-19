@@ -1,8 +1,11 @@
 package one.spectra.better_chests.abstractions;
 
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import one.spectra.better_chests.BetterChests;
+import net.minecraft.registry.entry.RegistryEntry;
 import one.spectra.better_chests.common.abstractions.ItemStack;
+import one.spectra.better_chests.common.grouping.GroupSettings;
+
 import java.util.stream.Collectors;
 
 public class SpectraItemStack implements ItemStack {
@@ -20,11 +23,23 @@ public class SpectraItemStack implements ItemStack {
 
     @Override
     public String getMaterialKey() {
-        var enchantment = "";
-        if (!EnchantmentHelper.getEnchantments(itemStack).isEmpty())
-            enchantment = EnchantmentHelper.getEnchantments(itemStack).getEnchantments().stream().map(x -> x.getKeyOrValue().toString()).sorted().collect(Collectors.joining(""));
+        return this.itemStack.getItem().toString();
+    }
 
-        return this.itemStack.getItem().toString() + enchantment;
+    private String getEnchantment() {
+        return EnchantmentHelper.getEnchantments(itemStack).getEnchantments().stream().map(x -> x.getIdAsString())
+                .sorted().collect(Collectors.joining(" - "));
+    }
+
+    private String getEnchantmentWithLevel() {
+        return EnchantmentHelper.getEnchantments(itemStack).getEnchantments().stream()
+                .map(x -> x.getIdAsString() + getLevel(x, itemStack))
+                .sorted().collect(Collectors.joining(" - "));
+    }
+
+    private String getLevel(RegistryEntry<Enchantment> enchantment, net.minecraft.item.ItemStack stack) {
+        var level = EnchantmentHelper.getEnchantments(itemStack).getLevel(enchantment);
+        return String.valueOf(level);
     }
 
     @Override
@@ -43,4 +58,17 @@ public class SpectraItemStack implements ItemStack {
     public int getDurability() {
         return itemStack.getDamage();
     }
+
+    @Override
+    public String getGroupKey(GroupSettings groupSettings) {
+        return groupSettings.groupEnchantments() ? this.getMaterialKey() + ":" + getEnchantment()
+                : this.getMaterialKey();
+    }
+
+    @Override
+    public String getSortKey() {
+        return this.getMaterialKey() + ":" + getEnchantmentWithLevel();
+    }
+
+    
 }

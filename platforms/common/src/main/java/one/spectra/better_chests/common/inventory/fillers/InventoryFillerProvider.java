@@ -1,6 +1,7 @@
 package one.spectra.better_chests.common.inventory.fillers;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -19,8 +20,12 @@ public class InventoryFillerProvider {
         _defaultFiller = defaultFiller;
     }
 
-    public Filler getInventoryFiller(Inventory inventory, List<List<ItemStack>> stacks) {
+    public Optional<Filler> getInventoryFiller(Inventory inventory, List<List<ItemStack>> stacks) {
         var filtered = _fillers.stream().filter(x -> x.canFill(inventory, stacks));
-        return filtered.findFirst().orElse(_defaultFiller);
+        return filtered.findFirst();
+    }
+
+    public Filler getDefaultFiller() {
+        return _defaultFiller;
     }
 }

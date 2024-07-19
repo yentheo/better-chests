@@ -8,57 +8,73 @@ import java.util.stream.Collectors;
 import com.google.inject.Inject;
 
 import one.spectra.better_chests.common.abstractions.ItemStack;
+import one.spectra.better_chests.common.grouping.GroupSettings;
+import one.spectra.better_chests.common.grouping.Grouper;
 import one.spectra.better_chests.common.inventory.InventoryCreator;
 import one.spectra.better_chests.common.inventory.Inventory;
 import one.spectra.better_chests.common.inventory.fillers.InventoryFillerProvider;
 
 public class Sorter {
 
-    private InventoryCreator _inventoryFactory;
-    private InventoryFillerProvider _inventoryFillerProvider;
+    private InventoryCreator inventoryFactory;
+    private InventoryFillerProvider inventoryFillerProvider;
+    private Grouper grouper;
 
     @Inject
-    public Sorter(InventoryCreator inventoryFactory, InventoryFillerProvider inventoryFillerProvider) {
-        _inventoryFactory = inventoryFactory;
-        _inventoryFillerProvider = inventoryFillerProvider;
+    public Sorter(InventoryCreator inventoryFactory, InventoryFillerProvider inventoryFillerProvider,
+            Grouper grouper) {
+        this.inventoryFactory = inventoryFactory;
+        this.inventoryFillerProvider = inventoryFillerProvider;
+        this.grouper = grouper;
     }
 
     public void sort(Inventory inventory, boolean spread) {
         var itemStacks = inventory.getItemStacks();
 
-        var tempInventory = this._inventoryFactory.create(inventory.getSize());
+        var tempInventory = this.inventoryFactory.create(inventory.getSize());
         itemStacks.forEach(x -> tempInventory.add(x));
         inventory.clear();
 
         var mergedStacks = tempInventory.getItemStacks();
 
         // inventory comparators
-        Comparator<Entry<String, List<ItemStack>>> groupStackAmountComparator = Comparator
-                .comparing(entry -> entry.getValue().size(), Comparator.reverseOrder());
-        Comparator<Entry<String, List<ItemStack>>> groupItemAmountComparator = Comparator.comparing(
-                entry -> entry.getValue().stream().mapToInt(l -> l.getAmount()).sum(), Comparator.reverseOrder());
-        Comparator<Entry<String, List<ItemStack>>> groupNameComparator = Comparator.comparing(entry -> entry.getKey());
+        Comparator<List<ItemStack>> groupStackAmountComparator = Comparator
+                .comparing(entry -> entry.size(), Comparator.reverseOrder());
+        Comparator<List<ItemStack>> groupItemAmountComparator = Comparator.comparing(
+                entry -> entry.stream().mapToInt(l -> l.getAmount()).sum(), Comparator.reverseOrder());
+        Comparator<List<ItemStack>> groupNameComparator = Comparator
+                .comparing(entry -> entry.getFirst().getMaterialKey());
 
         // group comparators
-        Comparator<ItemStack> amountComparator = Comparator.comparing(stack -> stack.getAmount(), Comparator.reverseOrder());
+        Comparator<ItemStack> amountComparator = Comparator.comparing(stack -> stack.getAmount(),
+                Comparator.reverseOrder());
         Comparator<ItemStack> durabilityComparator = Comparator.comparing(entry -> entry.getDurability());
+        Comparator<ItemStack> nameComparator = Comparator.comparing(entry -> entry.getSortKey());
 
-        var groupSorter = amountComparator.thenComparing(durabilityComparator);
+        var groupSorter = amountComparator.thenComparing(durabilityComparator).thenComparing(nameComparator);
 
-        var sortAlphabetically = false;
+        var inventorySorter = groupStackAmountComparator.thenComparing(groupItemAmountComparator)
+                .thenComparing(groupNameComparator);
 
-        var inventorySorter = sortAlphabetically ? groupNameComparator
-                : groupStackAmountComparator.thenComparing(groupItemAmountComparator)
-                        .thenComparing(groupNameComparator);
-        var groupedStacks = mergedStacks.stream().collect(Collectors.groupingBy(ItemStack::getMaterialKey)).entrySet()
-                .stream().sorted(inventorySorter)
-                .map(x -> x.getValue().stream()
-                        .sorted(groupSorter).toList()
-                        .stream().toList())
-                .toList();
+        var specificGroups = grouper.group(new GroupSettings(true), mergedStacks);
+        var specificGroupFiller = inventoryFillerProvider.getInventoryFiller(inventory, specificGroups);
 
-        var filler = _inventoryFillerProvider.getInventoryFiller(inventory, groupedStacks);
+        if (specificGroupFiller.isPresent()) {
+            var sortedGroups = specificGroups.stream().sorted(inventorySorter)
+                    .map(x -> x.stream().sorted(groupSorter).toList()).toList();
+            specificGroupFiller.get().fill(inventory, sortedGroups, spread);
+        } else {
+            var groups = grouper.group(new GroupSettings(false), mergedStacks);
+            var sortedGropus = groups
+                    .stream().sorted(inventorySorter)
+                    .map(x -> x.stream()
+                            .sorted(groupSorter).toList())
+                    .toList();
 
-        filler.fill(inventory, groupedStacks, spread);
+            var filler = inventoryFillerProvider.getInventoryFiller(inventory, sortedGropus)
+                    .orElse(inventoryFillerProvider.getDefaultFiller());
+
+            filler.fill(inventory, sortedGropus, spread);
+        }
     }
 }
