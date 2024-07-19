@@ -3,7 +3,7 @@ This mod is intended to add the main feature that is missing from vanilla Minecr
 
 At the moment it just adds a button that groups and spreads stacks.
 
-If space permits to distrbute over rows it will, if it permits to distribute over columns, it will choose that second. Otherwise it will just order by alphabetical order.
+If space permits to distribute over rows it will, if it permits to distribute over columns, it will choose that second. Otherwise it will just order by alphabetical order.
 
 At the moment it will spread stacks by default over rows or columns, in the future this will be a setting.
 
