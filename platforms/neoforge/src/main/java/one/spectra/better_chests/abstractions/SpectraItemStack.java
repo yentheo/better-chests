@@ -3,7 +3,6 @@ package one.spectra.better_chests.abstractions;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import one.spectra.better_chests.BetterChestsMod;
 import one.spectra.better_chests.common.abstractions.ItemStack;
 import one.spectra.better_chests.common.grouping.GroupSettings;
 
@@ -34,9 +33,7 @@ public class SpectraItemStack implements ItemStack {
 
     @Override
     public ItemStack takeOne() {
-        this.itemStack.setCount(getAmount() - 1);
-        var newStack = new net.minecraft.world.item.ItemStack(this.itemStack.getItem(), 1);
-        return new SpectraItemStack(newStack);
+        return new SpectraItemStack(this.itemStack.split(1));
     }
 
     @Override

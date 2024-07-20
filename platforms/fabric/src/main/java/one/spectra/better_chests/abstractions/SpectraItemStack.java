@@ -49,9 +49,7 @@ public class SpectraItemStack implements ItemStack {
 
     @Override
     public ItemStack takeOne() {
-        this.itemStack.decrement(1);
-        var newStack = new net.minecraft.item.ItemStack(this.itemStack.getItem(), 1);
-        return new SpectraItemStack(newStack);
+        return new SpectraItemStack(this.itemStack.split(1));
     }
 
     @Override
