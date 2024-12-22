@@ -9,8 +9,8 @@ import net.minecraft.util.Identifier;
 public record SortRequest(boolean sortPlayerInventory, boolean spread) implements CustomPayload {
     public static final CustomPayload.Id<SortRequest> ID = new CustomPayload.Id<SortRequest>(
             Identifier.of("better-chest", "sort"));
-    public static final PacketCodec<RegistryByteBuf, SortRequest> CODEC = PacketCodec.tuple(PacketCodecs.BOOL,
-            SortRequest::sortPlayerInventory, PacketCodecs.BOOL,
+    public static final PacketCodec<RegistryByteBuf, SortRequest> CODEC = PacketCodec.tuple(PacketCodecs.BOOLEAN,
+            SortRequest::sortPlayerInventory, PacketCodecs.BOOLEAN,
             SortRequest::spread, SortRequest::new);
 
     @Override
