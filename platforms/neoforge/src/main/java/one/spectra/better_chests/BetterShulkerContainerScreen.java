@@ -1,8 +1,5 @@
 package one.spectra.better_chests;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,12 +12,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ShulkerBoxMenu;
 import net.neoforged.neoforge.network.PacketDistributor;
 import one.spectra.better_chests.common.configuration.GlobalConfiguration;
-import one.spectra.better_chests.communications.MessageService;
-import one.spectra.better_chests.communications.requests.GetConfigurationRequest;
 import one.spectra.better_chests.communications.requests.SortRequest;
-import one.spectra.better_chests.communications.responses.GetConfigurationResponse;
 import one.spectra.better_chests.configuration.ConfigurationMapper;
-import one.spectra.better_chests.configuration.FabricConfiguration;
 import one.spectra.better_chests.configuration.FabricGlobalConfiguration;
 
 public class BetterShulkerContainerScreen extends ShulkerBoxScreen {
