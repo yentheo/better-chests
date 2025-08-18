@@ -16,7 +16,6 @@ import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.util.math.BlockPos;
 import one.spectra.better_chests.ConfigurationBlockEntity;
 import one.spectra.better_chests.common.configuration.ContainerConfiguration;
-import one.spectra.better_chests.common.configuration.GlobalConfiguration;
 import one.spectra.better_chests.common.configuration.SortingConfiguration;
 
 @Mixin(LockableContainerBlockEntity.class)
@@ -31,12 +30,8 @@ public class SpectraBlockEntity extends BlockEntity implements ConfigurationBloc
 
     @Inject(method = "readNbt", at = @At("HEAD"))
     private void blockentity$read(NbtCompound nbt, WrapperLookup wrapperLookup, CallbackInfo callbackinfo) {
-        this.spread = getBoolean(nbt, "better_chests:spread");
-        this.sortOnClose = getBoolean(nbt, "better_chests:sortOnClose");
-    }
-
-    private Optional<Boolean> getBoolean(NbtCompound nbt, String key) {
-        return nbt.contains(key) ? Optional.of(nbt.getBoolean(key)) : Optional.empty();
+        this.spread = nbt.getBoolean("better_chests:spread");
+        this.sortOnClose = nbt.getBoolean("better_chests:sortOnClose");
     }
 
     @Inject(method = "writeNbt", at = @At("HEAD"))
@@ -51,7 +46,7 @@ public class SpectraBlockEntity extends BlockEntity implements ConfigurationBloc
             nbt.remove(key);
         }
 
-        if (valuePresent && (!nbt.contains(key) || nbt.getBoolean(key) != value.get())) {
+        if (valuePresent && (!nbt.contains(key) || nbt.getBoolean(key).orElse(false) != value.get())) {
             nbt.putBoolean(key, value.get());
         }
     }

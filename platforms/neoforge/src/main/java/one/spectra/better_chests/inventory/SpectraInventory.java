@@ -81,8 +81,8 @@ public class SpectraInventory implements Inventory {
         var blockEntity = getBlockEntity();
         if (blockEntity != null) {
             var persistantData = blockEntity.getPersistentData();
-            var spread = getBooleanSafe(persistantData, "better_chests:spread");
-            var sortOnClose = getBooleanSafe(persistantData, "better_chests:sortOnClose");
+            var spread = persistantData.getBoolean("better_chests:spread");
+            var sortOnClose = persistantData.getBoolean("better_chests:sortOnClose");
             var sortingConfiguration = new SortingConfiguration(spread, sortOnClose);
             return new ContainerConfiguration(sortingConfiguration);
         }
@@ -103,10 +103,6 @@ public class SpectraInventory implements Inventory {
                 persistentData.remove("better_chests:sortOnClose");
 
         }
-    }
-
-    private Optional<Boolean> getBooleanSafe(CompoundTag data, String key) {
-        return data.contains(key) ? Optional.of(data.getBoolean(key)) : Optional.empty();
     }
 
     private BlockEntity getBlockEntity() {

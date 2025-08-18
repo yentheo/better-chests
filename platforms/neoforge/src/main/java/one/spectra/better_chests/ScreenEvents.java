@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.ShulkerBoxScreen;
-import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
@@ -16,10 +15,10 @@ public class ScreenEvents {
         var minecraft = Minecraft.getInstance();
         if (screen instanceof ContainerScreen) {
             var containerScreen = (ContainerScreen) screen;
-            event.setNewScreen(new BetterContainerScreen(containerScreen.getMenu(), new Inventory(minecraft.player), containerScreen.getTitle()));
+            event.setNewScreen(new BetterContainerScreen(containerScreen.getMenu(), minecraft.player.getInventory(), containerScreen.getTitle()));
         } else if (screen instanceof ShulkerBoxScreen) {
             var containerScreen = (ShulkerBoxScreen) screen;
-            event.setNewScreen(new BetterShulkerContainerScreen(containerScreen.getMenu(), new Inventory(minecraft.player), containerScreen.getTitle()));
+            event.setNewScreen(new BetterShulkerContainerScreen(containerScreen.getMenu(), minecraft.player.getInventory(), containerScreen.getTitle()));
         } else if (screen instanceof InventoryScreen) {
             event.setNewScreen(new BetterInventoryScreen(minecraft.player));
         }
