@@ -26,7 +26,7 @@ public class BetterInventoryScreen extends InventoryScreen {
 
         var globalConfiguration = globalConfigurationHolder.get();
 
-        if (globalConfiguration.showSortButton) {
+        if (globalConfiguration.showSortButton && DependencyChecker.areDependenciesPresent()) {
 
             var positionX = this.leftPos + this.imageWidth - 20;
             var positionY = this.topPos + 72;
