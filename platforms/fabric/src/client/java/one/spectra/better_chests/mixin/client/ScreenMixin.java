@@ -165,7 +165,6 @@ public abstract class ScreenMixin {
     private void bc$onRender(DrawContext ctx, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (!((Object) this instanceof HandledScreen<?>))
             return;
-        org.slf4j.LoggerFactory.getLogger("better-chests").info("render");
         repositionButtons();
     }
 
