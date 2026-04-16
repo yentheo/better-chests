@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gradle runClient:*)",
+      "Bash(./gradlew runClient:*)",
+      "WebFetch(domain:services.gradle.org)"
+    ]
+  }
+}

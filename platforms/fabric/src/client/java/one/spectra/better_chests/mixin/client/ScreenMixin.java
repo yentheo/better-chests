@@ -152,7 +152,7 @@ public abstract class ScreenMixin {
         HandledScreenAccessor acc = (HandledScreenAccessor) (Object) this;
         Screen screen = (Screen) (Object) this;
         configurationButton = new ConfigurationButtonWidget(acc.bc$getX() + acc.bc$getBackgroundWidth() + 2,
-                acc.bc$getY() + 1, screen, client, () -> {
+                acc.bc$getY() + 1, button -> {
                     var configScreen = currentScreenHelper.isGenericContainerScreen()
                             ? AutoConfig.getConfigScreen(FabricConfiguration.class, screen).get()
                             : AutoConfig.getConfigScreen(FabricGlobalConfiguration.class, screen).get();
